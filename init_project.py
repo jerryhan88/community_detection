@@ -18,4 +18,20 @@ for dn in ['home', 'singleShift', 'dwellTime']:
     except OSError:
         pass
 
-# ss_drivers_dpath, ss_drivers_prefix = '%s/%s' % (tc_data, 'ss_drivers_by_trip'), 'ss-drivers-'
+MON, TUE, WED, THR, FRI, SAT, SUN = range(7)
+AM10, PM8 = 10, 20
+# Singapore Public Holidays
+HOLIDAYS2009 = [
+            (2009, 1, 1),    # New Year's Day, Thursday, 1 January 2009
+            (2009, 1, 26),    # Chinese New Year, Monday, 26 January 2009
+            (2009, 1, 27),    # Chinese New Year, Tuesday, 27 January 2009
+            (2009, 4, 10),    # Good Friday, Friday, 10 April 2009
+            (2009, 5, 1),     # Labour Day, Friday, 1 May 2009
+            (2009, 5, 9),     # Vesak Day, Saturday, 9 May 2009
+            (2009, 8, 10),    # National Day, Sunday*, 9 August 2009
+            (2009, 9, 21),    # Hari Raya Puasa, Sunday*, 20 September 2009
+            (2009, 11, 16),   # Deepavali, Sunday*, 15 November 2009
+            (2009, 11, 27),   # Hari Raya Haji, Friday, 27 November 2009
+            (2009, 12, 25),   # Christmas Day, Friday, 25 December 2009
+]
+FREE, POB = 0, 5

@@ -22,8 +22,7 @@ def get_sgMainBorder():
         for row in reader:
             lon, lat = map(eval, [row[hid[cn]] for cn in ['longitude', 'latitude']])
             sgMainBorder += [(lon, lat)]
-    sgMainBorder = np.array(sgMainBorder)
-    np.save(ofpath, sgMainBorder)
+    np.save(ofpath, np.array(sgMainBorder))
     return sgMainBorder
 
 
@@ -44,22 +43,26 @@ def get_sgGrid():
     #
     mover = VincentyDistance(kilometers=ZONE_UNIT_KM)
     #
-    lons = np.array([])
-    x = min_lon
-    while x < max_lon:
-        lons = np.append(lons, x)
-        p0 = [min_lat, x]
+    lons = []
+    lon = min_lon
+    while lon < max_lon:
+        lons += [lon]
+        p0 = [min_lat, lon]
         moved_point = mover.destination(point=p0, bearing=EAST)
-        x = moved_point.longitude
-    np.save(lons_ofpath, lons)
+        lon = moved_point.longitude
+    lons.sort()
+    np.save(lons_ofpath, np.array(lons))
     #
-    lats = np.array([])
-    y = min_lat
-    while y < max_lat:
-        lats.append(y)
-        p0 = [y, min_lon]
+    lats = []
+    lat = min_lat
+    while lat < max_lat:
+        lats += [lat]
+        p0 = [lat, min_lon]
         moved_point = mover.destination(point=p0, bearing=NORTH)
-        y = moved_point.latitude
-    lons.sort(); lats.sort()
-    save_pickle_file(ofpath, [lons, lats])
+        lat = moved_point.latitude
+    lats.sort()
+    np.save(lats_ofpath, np.array(lats))
     return lons, lats
+
+if __name__ == '__main__':
+    print get_sgGrid()
