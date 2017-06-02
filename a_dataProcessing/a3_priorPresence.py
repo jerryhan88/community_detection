@@ -13,7 +13,7 @@ def process_month(yymm):
     logger.info('handle the file; %s' % yymm)
 
     ofpath = '%s/%s%s.csv' % (of_dpath, of_prefixs, yymm)
-    if check_path_exist(ofpath):
+    if opath.exists(ofpath):
         logger.info('The processed; %s' % yymm)
         return None
 
@@ -50,6 +50,48 @@ def process_month(yymm):
                     drivers[did] = ca_driver_withPrevDrivers(did)
                 prevDrivers = drivers[did].find_prevDriver(t, z)
                 writer.writerow(row + ['&'.join(map(str, prevDrivers))])
+
+
+class driver(object):
+    def __init__(self, did):
+        self.did = did
+
+    def find_prevDriver(self, t, z):
+        z.update_logQ(t)
+        prevDrivers = set()
+        for _, d in z.logQ:
+            if d.did == self.did:
+                continue
+            prevDrivers.add(d.did)
+        z.add_driver_in_logQ(t, self)
+        return prevDrivers
+
+
+class zone(object):
+    def __init__(self, zi, zj):
+        self.zi, self.zj = zi, zj
+        self.logQ = []
+
+    def add_driver_in_logQ(self, t, d):
+        self.logQ.append([t, d])
+
+    def update_logQ(self, t):
+        while self.logQ and self.logQ[0][0] < t - HISTORY_LOOKUP_LENGTH:
+            self.logQ.pop(0)
+
+    def init_logQ(self):
+        self.logQ = []
+
+
+def generate_zones():
+    zones = {}
+    basic_zones = get_sg_zones()
+    for k, z in basic_zones.iteritems():
+        zones[k] = ca_zone(z.relation_with_poly, z.zi, z.zj, z.cCoor_gps, z.polyPoints_gps)
+    return zones
+
+
+
 
 
 if __name__ == '__main__':
