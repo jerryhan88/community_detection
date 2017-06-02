@@ -116,7 +116,7 @@ def process_month(yymm):
                         continue
                     dwellTime = tripTime - drivers[didT].firstFreeStateTime \
                                 if drivers[didT].firstFreeStateTime != -1 else 0
-                    prevDrivers = drivers[didT].find_prevDriver(tripTime, zones[(zi, zj)])
+                    prevDriverLonLat = drivers[didT].get_prevDriverLonLat(tripTime, lon, lat, zones[(zi, zj)])
                     #
                     with open(ofpath, 'a') as w_csvfile:
                         writer = csv.writer(w_csvfile, lineterminator='\n')
@@ -125,7 +125,7 @@ def process_month(yymm):
                                    rowN[hidN['distance']], rowN[hidN['duration']], rowN[hidN['fare']],
                                    didT,
                                    zi, zj, dwellTime]
-                        writer.writerow(new_row + ['&'.join(map(str, prevDrivers))])
+                        writer.writerow(new_row + ['|'.join(prevDriverLonLat)])
 
 
 class driver(object):
@@ -154,21 +154,24 @@ class driver(object):
                     self.firstFreeStateTime = cl_time
         self.pl_time, self.pl_zi, self.pl_zj, self.pl_state = cl_time, cl_zi, cl_zj, cl_state
 
-    def find_prevDriver(self, pickUpTime, z):
+    def get_prevDriverLonLat(self, pickUpTime, lon, lat, z):
         z.update_logQ(pickUpTime)
         if not self.zoneEnteredTime.has_key((z.zi, z.zj)):
             did1_zEnteredTime = pickUpTime
         else:
             did1_zEnteredTime = self.zoneEnteredTime[z.zi, z.zj]
-        prevDrivers = set()
-        for _, d in z.logQ:
+        prevDriverLonLat = {}
+        for _, d, lon, lat in z.logQ:
             if d.did == self.did:
                 continue
-            did0_zEnteredTime = d.zoneEnteredTime[z.zi, z.zj]
-            if did0_zEnteredTime < did1_zEnteredTime:
-                prevDrivers.add(d.did)
-        z.add_driver_in_logQ(pickUpTime, self)
-        return prevDrivers
+            if d.zoneEnteredTime.has_key((z.zi, z.zj)):
+                did0_zEnteredTime = d.zoneEnteredTime[z.zi, z.zj]
+                if did0_zEnteredTime < did1_zEnteredTime:
+                    prevDriverLonLat[d.did] = '%d&%f&%f' % (d.did, lon, lat)
+            else:
+                prevDriverLonLat[d.did] = '%d&%f&%f' % (d.did, lon, lat)
+        z.add_driver_in_logQ(pickUpTime, self, lon, lat)
+        return prevDriverLonLat.values()
 
 
 class zone(object):
@@ -176,8 +179,8 @@ class zone(object):
         self.zi, self.zj = zi, zj
         self.logQ = deque()
 
-    def add_driver_in_logQ(self, pickUpTime, d):
-        self.logQ += [[pickUpTime, d]]
+    def add_driver_in_logQ(self, pickUpTime, d, lon, lat):
+        self.logQ += [[pickUpTime, d, lon, lat]]
 
     def update_logQ(self, pickUpTime):
         while self.logQ and self.logQ[0][0] < pickUpTime - HISTORY_LOOKUP_LENGTH:

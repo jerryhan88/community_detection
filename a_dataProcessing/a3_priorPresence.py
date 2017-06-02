@@ -67,7 +67,7 @@ def process_day(yyyymmdd):
                     continue
                 if not drivers.has_key(did):
                     drivers[did] = driver(did)
-                prevDrivers = drivers[did].find_prevDriver(t, z)
+                prevDrivers = drivers[did].get_prevDriverLonLat(t, z)
                 writer.writerow(row + ['&'.join(map(str, prevDrivers))])
 
 
