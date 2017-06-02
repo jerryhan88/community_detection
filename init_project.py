@@ -9,6 +9,7 @@ ZONE_UNIT_KM = 0.5
 dpath['home'] = opath.join(taxi_data_home, 'communityDetection')
 dpath['singleShift'] = opath.join(dpath['home'], 'singleShift')
 dpath['dwellTime'] = opath.join(dpath['home'], 'dwellTime')
+dpath['Presence'] = opath.join(dpath['home'], 'Presence')
 
 
 for dn in ['home', 'singleShift', 'dwellTime']:
