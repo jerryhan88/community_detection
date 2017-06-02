@@ -79,16 +79,14 @@ def process_month(yymm):
                     while True:
                         rowL = logReader.next()
                         logTime = eval(rowL[hidL['time']])
-                        didL = int(rowL[hidL['driver-id']])
-                        if didL not in ss_drivers:
-                            continue
                         cur_dtL = datetime.fromtimestamp(logTime)
                         if handling_dayL != cur_dtL.day:
                             handling_dayL = cur_dtL.day
                             logger.info('\t Log processing %s %dth day' % (yymm, handling_dayL))
-                        if cur_dtL.weekday() in [FRI, SAT, SUN]:
+                        if not drivers and handling_dayL != handling_dayT:
                             continue
-                        if (cur_dtL.year, cur_dtL.month, cur_dtL.day) in HOLIDAYS2009:
+                        didL = int(rowL[hidL['driver-id']])
+                        if didL not in ss_drivers:
                             continue
                         if cur_dtL.hour < AM10:
                             continue
