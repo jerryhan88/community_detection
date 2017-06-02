@@ -3,29 +3,52 @@ from init_project import *
 #
 from _utils.logger import get_logger
 #
+from collections import deque
 import os.path as opath
-
+import os
+import csv
 
 logger = get_logger()
 
+NUM_PROCESSORS = 11
 
-def process_month(yymm):
-    logger.info('handle the file; %s' % yymm)
 
-    ofpath = '%s/%s%s.csv' % (of_dpath, of_prefixs, yymm)
+def run(processorID):
+    for i, fn in enumerate(os.listdir(dpath['dwellTime'])):
+        if not fn.startswith('dwellTime'):
+            continue
+        if i % NUM_PROCESSORS != processorID:
+            continue
+        _, yyyymmdd = fn[:-len('.csv')].split('-')
+        process_day(yyyymmdd)
+
+
+
+class zone(object):
+    def __init__(self, zi, zj):
+        self.zi, self.zj = zi, zj
+        self.logQ = deque()
+
+    def add_driver_in_logQ(self, t, d):
+        self.logQ.append([t, d])
+
+    def update_logQ(self, t):
+        while self.logQ and self.logQ[0][0] < t - HISTORY_LOOKUP_LENGTH:
+            self.logQ.dq.popleft()
+
+
+
+
+def process_day(yyyymmdd):
+    logger.info('handle the file; %s' % yyyymmdd)
+    ofpath = opath.join(dpath['priorPresence'], 'priorPresence-%s.csv' % yyyymmdd)
     if opath.exists(ofpath):
-        logger.info('The processed; %s' % yymm)
+        logger.info('The processed; %s' % yyyymmdd)
         return None
+    ifpath = opath.join(dpath['dwellTime'], 'dwellTime-%s.csv' % yyyymmdd)
 
-
-    ifpath = '%s/%s%s.csv' % (if_dpath, if_prefixs, yymm)
-    if not check_path_exist(ifpath):
-        logger.info('The file X exists; %s' % yymm)
-        return None
-
-    drivers = {}
     zones = generate_zones()
-    handling_day = 0
+    drivers = {}
     with open(ifpath, 'rb') as r_csvfile:
         reader = csv.reader(r_csvfile)
         header = reader.next()
@@ -36,10 +59,6 @@ def process_month(yymm):
             writer.writerow(new_header)
             for row in reader:
                 t = eval(row[hid['time']])
-                cur_dt = datetime.datetime.fromtimestamp(t)
-                if handling_day != cur_dt.day:
-                    logger.info('Processing %s %dth day (month %d)' % (yymm, cur_dt.day, cur_dt.month))
-                    handling_day = cur_dt.day
                 did = int(row[hid['did']])
                 zi, zj = int(row[hid['zi']]), int(row[hid['zj']])
                 try:
@@ -47,7 +66,7 @@ def process_month(yymm):
                 except KeyError:
                     continue
                 if not drivers.has_key(did):
-                    drivers[did] = ca_driver_withPrevDrivers(did)
+                    drivers[did] = driver(did)
                 prevDrivers = drivers[did].find_prevDriver(t, z)
                 writer.writerow(row + ['&'.join(map(str, prevDrivers))])
 
@@ -67,28 +86,6 @@ class driver(object):
         return prevDrivers
 
 
-class zone(object):
-    def __init__(self, zi, zj):
-        self.zi, self.zj = zi, zj
-        self.logQ = []
-
-    def add_driver_in_logQ(self, t, d):
-        self.logQ.append([t, d])
-
-    def update_logQ(self, t):
-        while self.logQ and self.logQ[0][0] < t - HISTORY_LOOKUP_LENGTH:
-            self.logQ.pop(0)
-
-    def init_logQ(self):
-        self.logQ = []
-
-
-def generate_zones():
-    zones = {}
-    basic_zones = get_sg_zones()
-    for k, z in basic_zones.iteritems():
-        zones[k] = ca_zone(z.relation_with_poly, z.zi, z.zj, z.cCoor_gps, z.polyPoints_gps)
-    return zones
 
 
 

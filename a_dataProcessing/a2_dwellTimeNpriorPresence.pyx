@@ -4,6 +4,7 @@ from init_project import *
 from _utils.logger import get_logger
 from _utils.geoFunctions import get_sgGrid
 #
+from collections import deque
 import os.path as opath
 from datetime import datetime
 from bisect import bisect
@@ -28,7 +29,7 @@ def process_month(yymm):
     lons, lats = map(list, get_sgGrid())
     ofpath, handling_dayT = None, 0
     handling_dayL = 0
-    drivers = {}
+    drivers, zones = None, None
     with open(normal_fpath, 'rb') as tripFileN:
     # with gzip.open(normal_fpath, 'rt') as tripFileN:
         tripReaderN = csv.reader(tripFileN)
@@ -73,8 +74,11 @@ def process_month(yymm):
                                              'time', 'lon', 'lat',
                                              'distance', 'duration', 'fare',
                                              'did',
-                                             'zi', 'zj', 'dwellTime'])
-                        drivers = {}
+                                             'zi', 'zj', 'dwellTime', 'priorPresence'])
+                        drivers, zones = {}, {}
+                        for zi in xrange(len(lons)):
+                            for zj in xrange(len(lats)):
+                                zones[zi, zj] = zones(zi, zj)
                     #
                     while True:
                         rowL = logReader.next()
@@ -96,12 +100,11 @@ def process_month(yymm):
                         zi, zj = bisect(lons, lon) - 1, bisect(lats, lat) - 1
                         if zi < 0 or zj < 0:
                             continue
-                        t, s = eval(rowL[hidL['time']]), eval(rowL[hidL['state']])
-                        z = (zi, zj)
+                        state = eval(rowL[hidL['state']])
                         if not drivers.has_key(didL):
-                            drivers[didL] = driver(didL, t, z, s)
+                            drivers[didL] = driver(didL, logTime, zi, zj, state)
                         else:
-                            drivers[didL].update(t, z, s)
+                            drivers[didL].update(logTime, zi, zj, state)
                         if tripTime <= logTime:
                             break
                     #
@@ -113,35 +116,72 @@ def process_month(yymm):
                         continue
                     dwellTime = tripTime - drivers[didT].firstFreeStateTime \
                                 if drivers[didT].firstFreeStateTime != -1 else 0
+                    prevDrivers = drivers[didT].find_prevDriver(tripTime, zones[(zi, zj)])
                     #
                     with open(ofpath, 'a') as w_csvfile:
                         writer = csv.writer(w_csvfile, lineterminator='\n')
-                        writer.writerow([cur_dtT.year, cur_dtT.month, cur_dtT.day, cur_dtT.hour,
-                                         tripTime, lon, lat,
-                                         rowN[hidN['distance']], rowN[hidN['duration']], rowN[hidN['fare']],
-                                         didT,
-                                         zi, zj, dwellTime])
+                        new_row = [cur_dtT.year, cur_dtT.month, cur_dtT.day, cur_dtT.hour,
+                                   tripTime, lon, lat,
+                                   rowN[hidN['distance']], rowN[hidN['duration']], rowN[hidN['fare']],
+                                   didT,
+                                   zi, zj, dwellTime]
+                        writer.writerow(new_row + ['&'.join(map(str, prevDrivers))])
 
 
 class driver(object):
-    def __init__(self, did, cl_time, cl_zone, cl_state):
+    def __init__(self, did, cl_time, cl_zi, cl_zj, cl_state):
         self.did = did
-        self.pl_time, self.pl_zone, self.pl_state = cl_time, cl_zone, cl_state
+        self.pl_time, self.pl_zi, self.pl_zj, self.pl_state = cl_time, cl_zi, cl_zj, cl_state
         if self.pl_state == FREE:
             self.firstFreeStateTime = self.pl_time
         else:
             self.firstFreeStateTime = -1
+        #
+        self.zoneEnteredTime = {}
+        self.zoneEnteredTime[self.pl_zone] = self.pl_time
 
-    def update(self, cl_time, cl_zone, cl_state):
+    def update(self, cl_time, cl_zi, cl_zj, cl_state):
+        if (self.pl_zi, self.pl_zj) != (cl_zi, cl_zj):
+            self.zoneEnteredTime[cl_zi, cl_zj] = cl_time
+        #
         if cl_state != FREE:
             self.firstFreeStateTime = -1
         else:
-            if self.pl_zone != cl_zone:
+            if (self.pl_zi, self.pl_zj) != (cl_zi, cl_zj):
                 self.firstFreeStateTime = cl_time
             else:
                 if self.pl_state != FREE:
                     self.firstFreeStateTime = cl_time
-        self.pl_time, self.pl_zone, self.pl_state = cl_time, cl_zone, cl_state
+        self.pl_time, self.pl_zi, self.pl_zj, self.pl_state = cl_time, cl_zi, cl_zj, cl_state
+
+    def find_prevDriver(self, pickUpTime, z):
+        z.update_logQ(pickUpTime)
+        if not self.zoneEnteredTime.has_key((z.zi, z.zj)):
+            did1_zEnteredTime = pickUpTime
+        else:
+            did1_zEnteredTime = self.zoneEnteredTime[z.zi, z.zj]
+        prevDrivers = set()
+        for _, d in z.logQ:
+            if d.did == self.did:
+                continue
+            did0_zEnteredTime = d.zoneEnteredTime[z.zi, z.zj]
+            if did0_zEnteredTime < did1_zEnteredTime:
+                prevDrivers.add(d.did)
+        z.add_driver_in_logQ(pickUpTime, self)
+        return prevDrivers
+
+
+class zone(object):
+    def __init__(self, zi, zj):
+        self.zi, self.zj = zi, zj
+        self.logQ = deque()
+
+    def add_driver_in_logQ(self, pickUpTime, d):
+        self.logQ += [[pickUpTime, d]]
+
+    def update_logQ(self, pickUpTime):
+        while self.logQ and self.logQ[0][0] < pickUpTime - HISTORY_LOOKUP_LENGTH:
+            self.logQ.dq.popleft()
 
 
 if __name__ == '__main__':

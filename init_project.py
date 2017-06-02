@@ -9,10 +9,10 @@ ZONE_UNIT_KM = 0.5
 dpath['home'] = opath.join(taxi_data_home, 'communityDetection')
 dpath['singleShift'] = opath.join(dpath['home'], 'singleShift')
 dpath['dwellTime'] = opath.join(dpath['home'], 'dwellTime')
-dpath['Presence'] = opath.join(dpath['home'], 'Presence')
+dpath['priorPresence'] = opath.join(dpath['home'], 'priorPresence')
 
 
-for dn in ['home', 'singleShift', 'dwellTime']:
+for dn in ['home', 'singleShift', 'dwellTime', 'priorPresence']:
     try:
         if not opath.exists(dpath[dn]):
             os.makedirs(dpath[dn])
@@ -36,3 +36,4 @@ HOLIDAYS2009 = [
             (2009, 12, 25),   # Christmas Day, Friday, 25 December 2009
 ]
 FREE, POB = 0, 5
+HISTORY_LOOKUP_LENGTH = 30 * 60
