@@ -66,8 +66,8 @@ def process_month(yymm):
                     if handling_dayT != cur_dtT.day:
                         handling_dayT = cur_dtT.day
                         logger.info('Processing %s %dth day' % (yymm, cur_dtT.day))
-                        ofpath = opath.join(dpath['dwellTime'],
-                                            'dwellTime-%d%02d%02d.csv' % (cur_dtT.year, cur_dtT.month, cur_dtT.day))
+                        ofpath = opath.join(dpath['dwellTimeNpriorPresence'],
+                                            'dwellTimeNpriorPresence-%d%02d%02d.csv' % (cur_dtT.year, cur_dtT.month, cur_dtT.day))
                         with open(ofpath, 'wt') as w_csvfile:
                             writer = csv.writer(w_csvfile, lineterminator='\n')
                             writer.writerow(['year', 'month', 'day', 'hour',
