@@ -78,7 +78,7 @@ def process_month(yymm):
                         drivers, zones = {}, {}
                         for zi in xrange(len(lons)):
                             for zj in xrange(len(lats)):
-                                zones[zi, zj] = zones(zi, zj)
+                                zones[zi, zj] = zone(zi, zj)
                     #
                     while True:
                         rowL = logReader.next()

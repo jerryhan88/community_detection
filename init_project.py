@@ -8,11 +8,10 @@ ZONE_UNIT_KM = 0.5
 # --------------------------------------------------------------
 dpath['home'] = opath.join(taxi_data_home, 'communityDetection')
 dpath['singleShift'] = opath.join(dpath['home'], 'singleShift')
-dpath['dwellTime'] = opath.join(dpath['home'], 'dwellTime')
-dpath['priorPresence'] = opath.join(dpath['home'], 'priorPresence')
+dpath['dwellTimeNpriorPresence'] = opath.join(dpath['home'], 'dwellTimeNpriorPresence')
 
 
-for dn in ['home', 'singleShift', 'dwellTime', 'priorPresence']:
+for dn in ['home', 'singleShift', 'dwellTimeNpriorPresence']:
     try:
         if not opath.exists(dpath[dn]):
             os.makedirs(dpath[dn])
