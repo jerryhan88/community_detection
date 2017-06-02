@@ -138,7 +138,7 @@ class driver(object):
             self.firstFreeStateTime = -1
         #
         self.zoneEnteredTime = {}
-        self.zoneEnteredTime[self.pl_zone] = self.pl_time
+        self.zoneEnteredTime[self.pl_zi, self.pl_zj] = self.pl_time
 
     def update(self, cl_time, cl_zi, cl_zj, cl_state):
         if (self.pl_zi, self.pl_zj) != (cl_zi, cl_zj):
