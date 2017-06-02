@@ -184,7 +184,7 @@ class zone(object):
 
     def update_logQ(self, pickUpTime):
         while self.logQ and self.logQ[0][0] < pickUpTime - HISTORY_LOOKUP_LENGTH:
-            self.logQ.dq.popleft()
+            self.logQ.popleft()
 
 
 if __name__ == '__main__':
