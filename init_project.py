@@ -11,9 +11,11 @@ dpath['singleShift'] = opath.join(dpath['home'], 'singleShift')
 dpath['dwellTimeNpriorPresence'] = opath.join(dpath['home'], 'dwellTimeNpriorPresence')
 dpath['driverTrip'] = opath.join(dpath['home'], 'driverTrip')
 dpath['pickupDistance'] = opath.join(dpath['home'], 'pickupDistance')
+dpath['individualRelation'] = opath.join(dpath['home'], 'individualRelation')
 
 for dn in ['home', 'singleShift',
-           'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance']:
+           'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
+           'individualRelation']:
     try:
         if not opath.exists(dpath[dn]):
             os.makedirs(dpath[dn])
@@ -38,3 +40,5 @@ HOLIDAYS2009 = [
 ]
 FREE, POB = 0, 5
 HISTORY_LOOKUP_LENGTH = 30 * 60
+SIGINIFICANCE_LEVEL = 0.01
+MIN_PICKUP_RATIO = 0.1
