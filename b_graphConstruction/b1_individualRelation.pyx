@@ -39,8 +39,8 @@ def process_driver(fn):
     sigRelatioin = {k: [] for k in ['pos', 'neg']}
     for _did0 in prevDrivers:
         num_encouters = sum([1 for v in df[_did0] if v !=0])
-        if num_encouters < numObservations * MIN_PICKUP_RATIO:
-            continue
+        # if num_encouters < numObservations * MIN_PICKUP_RATIO:
+        #     continue
         y = df['dwellTime']
         X = df[[_did0]]
         X = sm.add_constant(X)
