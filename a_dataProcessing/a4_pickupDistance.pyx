@@ -24,6 +24,7 @@ def run(processorID):
 
 
 def process_driver(fn):
+    logger.info('handling %s' % fn)
     prevDrivers = set()
     ifpath = opath.join(dpath['driverTrip'], fn)
     with open(ifpath, 'rb') as r_csvfile:
@@ -78,6 +79,7 @@ def process_driver(fn):
             with open(ofpath, 'a') as w_csvfile:
                 writer = csv.writer(w_csvfile, lineterminator='\n')
                 writer.writerow(new_row)
+    logger.info('end %s' % fn)
 
 
 if __name__ == '__main__':
