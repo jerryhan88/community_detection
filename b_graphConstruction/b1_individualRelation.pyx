@@ -2,6 +2,7 @@ import __init__
 from init_project import *
 #
 import statsmodels.api as sm
+import pickle
 import pandas as pd
 import csv
 
@@ -26,6 +27,7 @@ def process_driver(fn):
     numObservations = len(df)
     _, yyyy, _did1 = fn[:-len('.csv')].split('-')
     ofpath = opath.join(dpath['individualRelation'], 'individualRelation-%s-%s.csv' % (yyyy, _did1))
+    sig_fpath = opath.join(dpath['individualRelation'], 'sigRelation-%s-%s.pkl' % (yyyy, _did1))
     with open(ofpath, 'wt') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
         header = ['did', 'numWholeRecords',
@@ -60,6 +62,10 @@ def process_driver(fn):
                    len(sigRelatioin['pos']), len(sigRelatioin['neg']),
                    '|'.join([_did0 for _did0, _ in sigRelatioin['pos']]), '|'.join([_did0 for _did0, _ in sigRelatioin['neg']])]
         writer.writerow(new_row)
+    #
+    with open(sig_fpath, 'wb') as fp:
+        pickle.dump(sigRelatioin, fp)
+
 
 if __name__ == '__main__':
     run(2)
