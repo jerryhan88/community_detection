@@ -57,7 +57,7 @@ def process_driver(fn):
         header = reader.next()
         hid = {h: i for i, h in enumerate(header)}
         for row in reader:
-            new_row = row
+            new_row = row[:-1]
             priorPresence = row[hid['priorPresence']]
             if not priorPresence:
                 new_row += [0] * len(prevDrivers)
