@@ -24,8 +24,8 @@ def run(processorID):
 
 
 def process_driver(fn):
+    logger.info('handling %s' % fn)
     try:
-
         ifpath = opath.join(dpath['pickupDistance'], fn)
         df = pd.read_csv(ifpath)
         numWholeRecords = len(df)
@@ -81,6 +81,7 @@ def process_driver(fn):
         with open('%s_%s.txt' % (sys.argv[0], fn), 'w') as f:
             f.write(format_exc())
         raise
+    logger.info('end %s' % fn)
 
 
 if __name__ == '__main__':
