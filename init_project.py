@@ -10,8 +10,10 @@ dpath['home'] = opath.join(taxi_data_home, 'communityDetection')
 dpath['singleShift'] = opath.join(dpath['home'], 'singleShift')
 dpath['dwellTimeNpriorPresence'] = opath.join(dpath['home'], 'dwellTimeNpriorPresence')
 dpath['driverTrip'] = opath.join(dpath['home'], 'driverTrip')
+dpath['pickupDistance'] = opath.join(dpath['home'], 'pickupDistance')
 
-for dn in ['home', 'singleShift', 'dwellTimeNpriorPresence', 'driverTrip']:
+for dn in ['home', 'singleShift',
+           'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance']:
     try:
         if not opath.exists(dpath[dn]):
             os.makedirs(dpath[dn])
