@@ -3,6 +3,7 @@ from init_project import *
 #
 from _utils.logger import get_logger
 #
+from traceback import format_exc
 import threading
 import time
 import csv
@@ -36,31 +37,39 @@ def process_files(fileNames):
         locks_driverFile[did] = False
     #
     for fn in fileNames:
-        _, yyyymmdd = fn[:-len('.csv')].split('-')
-        logger.info('handling %s' % yyyymmdd)
-        yyyy = yyyymmdd[:4]
-        ifpath = opath.join(dpath['dwellTimeNpriorPresence'], fn)
-        with open(ifpath, 'rb') as r_csvfile:
-            reader = csv.reader(r_csvfile)
-            header = reader.next()
-            hid = {h: i for i, h in enumerate(header)}
-            for row in reader:
-                did = int(row[hid['did']])
-                ofpath = opath.join(dpath['driverTrip'], 'driverTrip-%s-%d.csv' % (yyyy, did))
-                if not locks_driverFile.has_key(did):
-                    locks_driverFile[did] = True
-                    with open(ofpath, 'wt') as w_csvfile:
-                        writer = csv.writer(w_csvfile, lineterminator='\n')
-                        writer.writerow(header)
-                    locks_driverFile[did] = False
-                if not locks_driverFile[did]:
-                    append_row(ofpath, row)
-                else:
-                    while True:
-                        time.sleep(1)
-                        if not locks_driverFile[did]:
-                            append_row(ofpath, row)
-                            break
+        try:
+            _, yyyymmdd = fn[:-len('.csv')].split('-')
+            logger.info('handling %s' % yyyymmdd)
+            yyyy = yyyymmdd[:4]
+            ifpath = opath.join(dpath['dwellTimeNpriorPresence'], fn)
+            with open(ifpath, 'rb') as r_csvfile:
+                reader = csv.reader(r_csvfile)
+                header = reader.next()
+                hid = {h: i for i, h in enumerate(header)}
+                for row in reader:
+                    did = int(row[hid['did']])
+                    ofpath = opath.join(dpath['driverTrip'], 'driverTrip-%s-%d.csv' % (yyyy, did))
+                    if not locks_driverFile.has_key(did):
+                        locks_driverFile[did] = True
+                        with open(ofpath, 'wt') as w_csvfile:
+                            writer = csv.writer(w_csvfile, lineterminator='\n')
+                            writer.writerow(header)
+                        locks_driverFile[did] = False
+                    if not locks_driverFile[did]:
+                        append_row(ofpath, row)
+                    else:
+                        while True:
+                            time.sleep(1)
+                            if not locks_driverFile[did]:
+                                append_row(ofpath, row)
+                                break
+        except Exception as _:
+            import sys
+            with open('%s_%s.txt' % (sys.argv[0], yyyymmdd), 'w') as f:
+                f.write(format_exc())
+            raise
+
+
 
 
 if __name__ == '__main__':
