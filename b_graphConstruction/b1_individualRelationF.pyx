@@ -58,7 +58,7 @@ def process_driver(fn):
             did0_df['zizj'] = did0_df.apply(lambda row: '%d#%d' % (row['zi'], row['zj']), axis=1)
             for zizj in zones:
                 did0_df['z'+zizj] = np.where(did0_df['zizj'] == zizj, 1, 0)
-            if numObservations < len(zones) + 1 + 1:
+            if num_encouters < len(zones) + 1 + 1:
                 continue
 
             y = did0_df['dwellTime']
