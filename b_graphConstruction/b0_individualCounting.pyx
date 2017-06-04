@@ -36,5 +36,10 @@ def process_driver(fn):
                        _did0, num_encouters]
             writer.writerow(new_row)
 
+
+
+
+
+
 if __name__ == '__main__':
     run(2)
