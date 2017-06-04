@@ -12,10 +12,12 @@ dpath['dwellTimeNpriorPresence'] = opath.join(dpath['home'], 'dwellTimeNpriorPre
 dpath['driverTrip'] = opath.join(dpath['home'], 'driverTrip')
 dpath['pickupDistance'] = opath.join(dpath['home'], 'pickupDistance')
 dpath['individualRelation'] = opath.join(dpath['home'], 'individualRelation')
+dpath['individualCounting'] = opath.join(dpath['home'], 'individualCounting')
+
 
 for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
-           'individualRelation']:
+           'individualRelation', 'individualCounting']:
     try:
         if not opath.exists(dpath[dn]):
             os.makedirs(dpath[dn])
