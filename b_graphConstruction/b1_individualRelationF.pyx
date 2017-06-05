@@ -12,7 +12,9 @@ import csv
 
 logger = get_logger()
 
-NUM_WORKERS = 11
+# NUM_WORKERS = 11
+NUM_WORKERS = 24 + 24 + 28 + 34
+
 HOUR1 = 3600
 
 def run(processorID):
