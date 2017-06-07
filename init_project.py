@@ -13,6 +13,13 @@ dpath['driverTrip'] = opath.join(dpath['home'], 'driverTrip')
 dpath['pickupDistance'] = opath.join(dpath['home'], 'pickupDistance')
 dpath['individualRelation'] = opath.join(dpath['home'], 'individualRelation')
 dpath['individualRelationF'] = opath.join(dpath['home'], 'individualRelationF')
+dpath['graphPartition'] = opath.join(dpath['home'], 'graphPartition')
+#
+dpath['synData'] = opath.join(dpath['home'], 'synData')
+dpath['agtRecord'] = opath.join(dpath['home'], 'agtRecord')
+dpath['agtPresence'] = opath.join(dpath['home'], 'agtPresence')
+dpath['agtRelation'] = opath.join(dpath['home'], 'agtRelation')
+
 
 
 dpath['individualCounting'] = opath.join(dpath['home'], 'individualCounting')
@@ -21,6 +28,13 @@ dpath['individualCounting'] = opath.join(dpath['home'], 'individualCounting')
 for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
            'individualRelation', 'individualRelationF',
+           'graphPartition',
+           'synData',
+           'agtRecord',
+           'agtPresence',
+           'agtRelation',
+
+
            'individualCounting']:
     try:
         if not opath.exists(dpath[dn]):

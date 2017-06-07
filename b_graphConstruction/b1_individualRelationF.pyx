@@ -13,7 +13,7 @@ import csv
 logger = get_logger()
 
 # NUM_WORKERS = 11
-NUM_WORKERS = 24 + 24 + 28 + 34
+NUM_WORKERS = 64
 
 HOUR1 = 3600
 
@@ -37,6 +37,8 @@ def process_driver(fn):
         _, yyyy, _did1 = fn[:-len('.csv')].split('-')
         ofpath = opath.join(dpath['individualRelationF'], 'individualRelationF-%s-%s.csv' % (yyyy, _did1))
         sig_fpath = opath.join(dpath['individualRelationF'], 'sigRelation-%s-%s.pkl' % (yyyy, _did1))
+        if opath.exists(sig_fpath):
+            return None
         with open(ofpath, 'wt') as w_csvfile:
             writer = csv.writer(w_csvfile, lineterminator='\n')
             header = ['did', 'numWholeRecords',
@@ -55,8 +57,9 @@ def process_driver(fn):
                 if encounter != 0:
                     num_encouters += 1
                     zones.add('%d#%d' % (zi, zj))
-
             did0_df = df[[_did0, 'zi', 'zj', 'dwellTime']]
+            if len(did0_df) == 0:
+                continue
             did0_df['zizj'] = did0_df.apply(lambda row: '%d#%d' % (row['zi'], row['zj']), axis=1)
             for zizj in zones:
                 did0_df['z'+zizj] = np.where(did0_df['zizj'] == zizj, 1, 0)
@@ -94,4 +97,5 @@ def process_driver(fn):
 
 
 if __name__ == '__main__':
-    run(1)
+    # run(1)
+    process_driver('pickupDistance-2009-13959.csv')
