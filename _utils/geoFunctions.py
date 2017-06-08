@@ -120,4 +120,4 @@ def get_sgPolygons():
 
 
 if __name__ == '__main__':
-    print get_sgGrid()
+    print get_sgPoints()
