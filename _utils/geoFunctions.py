@@ -1,8 +1,11 @@
 from init_project import *
 #
 import os.path as opath
-import numpy as np
 from geopy.distance import VincentyDistance
+from shapely.geometry import Polygon
+import geopandas as gpd
+import numpy as np
+import pickle
 import csv
 
 NORTH, EAST, SOUTH, WEST = 0, 90, 180, 270
@@ -63,6 +66,57 @@ def get_sgGrid():
     lats.sort()
     np.save(lats_ofpath, np.array(lats))
     return lons, lats
+
+
+def get_sgPoints():
+    ofpath = opath.join(dpath['geo'], 'sgPoints.pkl')
+    sgPoints = None
+    if opath.exists(ofpath):
+        with open(ofpath, 'rb') as fp:
+            sgPoints = pickle.load(fp)
+        return sgPoints
+    ifpath = opath.join(dpath['geo'], 'singapore_osm_point.geojson')
+    df = gpd.read_file(ifpath)
+    sgPoints = []
+    sgMainBorder = Polygon(get_sgMainBorder())
+    for i in xrange(len(df)):
+        if not df.loc[i, 'geometry'].within(sgMainBorder):
+            continue
+        point_info = {}
+        for cn in df.columns:
+            if not df.loc[i, cn]:
+                continue
+            point_info[cn] = df.loc[i, cn]
+        sgPoints += [point_info]
+    with open(ofpath, 'wb') as fp:
+        pickle.dump(sgPoints, fp)
+    return sgPoints
+
+
+def get_sgPolygons():
+    ofpath = opath.join(dpath['geo'], 'sgPolygons.pkl')
+    sgPolygons = None
+    if opath.exists(ofpath):
+        with open(ofpath, 'rb') as fp:
+            sgPolygons = pickle.load(fp)
+        return sgPolygons
+    ifpath = opath.join(dpath['geo'], 'singapore_osm_polygon.geojson')
+    df = gpd.read_file(ifpath)
+    sgPolygons = []
+    sgMainBorder = Polygon(get_sgMainBorder())
+    for i in xrange(len(df)):
+        if not df.loc[i, 'geometry'].within(sgMainBorder):
+            continue
+        poly_info = {}
+        for cn in df.columns:
+            if not df.loc[i, cn]:
+                continue
+            poly_info[cn] = df.loc[i, cn]
+        sgPolygons += [poly_info]
+    with open(ofpath, 'wb') as fp:
+        pickle.dump(sgPolygons, fp)
+    return sgPolygons
+
 
 if __name__ == '__main__':
     print get_sgGrid()
