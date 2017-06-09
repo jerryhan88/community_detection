@@ -124,16 +124,16 @@ def get_sgPolygons():
     return sgPolygons
 
 
-def find_aZone_points(zi, zj, zPoly):
+def find_aZone_points(zi, zj, zPoly, sgPoints):
     try:
         logger.info('handle %d %d; points' % (zi, zj))
         ofpath = opath.join(dpath['zonePoints'], 'zonePoints-zi(%d)zj(%d).pkl' % (zi, zj))
         if opath.exists(ofpath):
             return None
         aZone_points = []
-        for point_info in get_sgPoints():
+        for point_info in sgPoints:
             if point_info['geometry'].within(zPoly):
-                aZone_points += [point_info]
+                aZone_points += [dict(point_info)]
         with open(ofpath, 'wb') as fp:
             pickle.dump(aZone_points, fp)
     except Exception as _:
@@ -143,16 +143,16 @@ def find_aZone_points(zi, zj, zPoly):
         raise
     
     
-def find_aZone_polygons(zi, zj, zPoly):
+def find_aZone_polygons(zi, zj, zPoly, sgPolygons):
     try:
         logger.info('handle %d %d; polygons' % (zi, zj))
         ofpath = opath.join(dpath['zonePolygons'], 'zonePolygons-zi(%d)zj(%d).pkl' % (zi, zj))
         if opath.exists(ofpath):
             return None
         aZone_polygons = []
-        for poly_info in get_sgPolygons():
+        for poly_info in sgPolygons:
             if poly_info['geometry'].intersects(zPoly) or poly_info['geometry'].within(zPoly):
-                aZone_polygons += [poly_info]
+                aZone_polygons += [dict(poly_info)]
         with open(ofpath, 'wb') as fp:
             pickle.dump(aZone_polygons, fp)
     except Exception as _:
@@ -164,6 +164,7 @@ def find_aZone_polygons(zi, zj, zPoly):
 
 def classify_aZone_objects(processorID, NUM_WORKERS=11):
     lons, lats = get_sgGrid()
+    sgPoints, sgPolygons = get_sgPoints(), get_sgPolygons()
     i = 0
     for zi in xrange(len(lons) - 1):
         for zj in xrange(len(lats) - 1):
@@ -175,8 +176,8 @@ def classify_aZone_objects(processorID, NUM_WORKERS=11):
             leftBottom = (lons[zi], lats[zj])
             leftTop = (lons[zi], lats[zj + 1])
             zPoly = Polygon([rightTop, rightBottom, leftBottom, leftTop])
-            find_aZone_points(zi, zj, zPoly)
-            find_aZone_polygons(zi, zj, zPoly)
+            find_aZone_points(zi, zj, zPoly, sgPoints)
+            find_aZone_polygons(zi, zj, zPoly, sgPolygons)
 
 
 
