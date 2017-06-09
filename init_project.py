@@ -1,5 +1,12 @@
 import os.path as opath
 import os
+import igraph as ig
+import pickle
+import louvain
+import csv
+
+from _utils.logger import get_logger
+
 dpath = {}
 taxi_data_home = opath.join(opath.join(opath.dirname(opath.realpath(__file__)), '..'), 'taxi_data')
 dpath['raw'] = opath.join(taxi_data_home, 'raw')
@@ -17,10 +24,14 @@ dpath['individualRelation'] = opath.join(dpath['home'], 'individualRelation')
 dpath['individualRelationF'] = opath.join(dpath['home'], 'individualRelationF')
 dpath['graphPartition'] = opath.join(dpath['home'], 'graphPartition')
 #
+dpath['communityTrip'] = opath.join(dpath['home'], 'communityTrip')
+#
 dpath['synData'] = opath.join(dpath['home'], 'synData')
 dpath['agtRecord'] = opath.join(dpath['home'], 'agtRecord')
 dpath['agtPresence'] = opath.join(dpath['home'], 'agtPresence')
 dpath['agtRelation'] = opath.join(dpath['home'], 'agtRelation')
+#
+
 
 
 
@@ -29,12 +40,9 @@ dpath['individualCounting'] = opath.join(dpath['home'], 'individualCounting')
 
 for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
-           'individualRelation', 'individualRelationF',
-           'graphPartition',
-           'synData',
-           'agtRecord',
-           'agtPresence',
-           'agtRelation',
+           'individualRelation', 'individualRelationF', 'graphPartition',
+           'synData', 'agtRecord', 'agtPresence', 'agtRelation',
+           'communityTrip',
 
 
            'individualCounting']:

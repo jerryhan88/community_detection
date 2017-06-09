@@ -1,14 +1,6 @@
 import __init__
 from init_project import *
 #
-from _utils.logger import get_logger
-#
-#
-import igraph as ig
-import pickle
-import louvain
-import csv
-
 logger = get_logger()
 
 
@@ -56,7 +48,7 @@ def run():
     gn_drivers = {}
     for i, sg in enumerate(part.subgraphs()):
         gn = 'G(%d)' % i
-        group_fpath = opath.join(dpath['graphPartition'], 'graphPartitioin-%s.pkl' % gn)
+        group_fpath = opath.join(dpath['graphPartition'], 'graphPartition-%s.pkl' % gn)
         sg.write_pickle(group_fpath)
         #
         drivers = [v['name'] for v in sg.vs]
@@ -68,7 +60,7 @@ def run():
         with open(gp_summary_fpath, 'a') as w_csvfile:
             writer = csv.writer(w_csvfile, lineterminator='\n')
             writer.writerow([gn, len(drivers), len(weights), graphComplexity, tie_strength, contribution, benCon])
-        gl_img_fpath = opath.join(dpath['graphPartition'], 'graphPartitioin-img-%s.pdf' % gn)
+        gl_img_fpath = opath.join(dpath['graphPartition'], 'graphPartition-img-%s.pdf' % gn)
         layout = sg.layout("kk")
         if len(drivers) < 100:
             ig.plot(sg, gl_img_fpath, layout=layout, vertex_label=drivers)
@@ -77,7 +69,7 @@ def run():
             ig.plot(sg, gl_img_fpath, layout=layout)
             pass
         gn_drivers[gn] = drivers
-        gc_fpath = opath.join(dpath['graphPartition'], 'graphPartitioin-coef-%s.pkl' % gn)
+        gc_fpath = opath.join(dpath['graphPartition'], 'graphPartition-coef-%s.pkl' % gn)
         with open(gc_fpath, 'wt') as w_csvfile:
             writer = csv.writer(w_csvfile, lineterminator='\n')
             writer.writerow(['groupName', 'did0', 'did1', 'coef'])
