@@ -126,6 +126,7 @@ def get_sgPolygons():
 
 def find_aZone_points(zi, zj, zPoly):
     try:
+        logger.info('handle %d %d; points' % (zi, zj))
         ofpath = opath.join(dpath['zonePoints'], 'zonePoints-zi(%d)zj(%d).pkl' % (zi, zj))
         if opath.exists(ofpath):
             return None
@@ -144,6 +145,7 @@ def find_aZone_points(zi, zj, zPoly):
     
 def find_aZone_polygons(zi, zj, zPoly):
     try:
+        logger.info('handle %d %d; polygons' % (zi, zj))
         ofpath = opath.join(dpath['zonePolygons'], 'zonePolygons-zi(%d)zj(%d).pkl' % (zi, zj))
         if opath.exists(ofpath):
             return None
