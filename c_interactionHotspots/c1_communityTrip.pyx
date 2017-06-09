@@ -32,15 +32,30 @@ def process_group(gn):
             header = reader.next()
             with open(ofpath, 'wt') as w_csvfile:
                 writer = csv.writer(w_csvfile, lineterminator='\n')
+                new_header = header[:-1]
+                new_header += list(comDrivers)
                 writer.writerow(header)
             hid = {h: i for i, h in enumerate(header)}
             for row in reader:
                 if int(row[hid['did']]) not in comDrivers:
                     continue
+                new_row = row[:-1]
+                priorPresence = row[hid['priorPresence']]
+                if not priorPresence:
+                    new_row += [0] * len(comDrivers)
+                else:
+                    prevDrivers = set()
+                    for did_lon_lat in priorPresence.split('|'):
+                        _did, _, _ = did_lon_lat.split('&')
+                        prevDrivers.add(int(_did))
+                    for did0 in comDrivers:
+                        if did0 in prevDrivers:
+                            new_row += [1]
+                        else:
+                            new_row += [0]
                 with open(ofpath, 'a') as w_csvfile:
                     writer = csv.writer(w_csvfile, lineterminator='\n')
                     writer.writerow(row)
-
 
 
 if __name__ == '__main__':
