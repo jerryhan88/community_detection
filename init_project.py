@@ -4,6 +4,8 @@ dpath = {}
 taxi_data_home = opath.join(opath.join(opath.dirname(opath.realpath(__file__)), '..'), 'taxi_data')
 dpath['raw'] = opath.join(taxi_data_home, 'raw')
 dpath['geo'] = opath.join(taxi_data_home, 'geo')
+dpath['zonePoints'] = opath.join(dpath['geo'], 'zonePoints')
+dpath['zonePolygons'] = opath.join(dpath['geo'], 'zonePolygons')
 ZONE_UNIT_KM = 0.5
 # --------------------------------------------------------------
 dpath['home'] = opath.join(taxi_data_home, 'communityDetection')

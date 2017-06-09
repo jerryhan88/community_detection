@@ -119,5 +119,53 @@ def get_sgPolygons():
     return sgPolygons
 
 
+def find_aZone_points(zi, zj, zPoly):
+    ofpath = opath.join(dpath['zonePoints'], 'zonePoints-zi(%d)zj(%d).pkl' % (zi, zj))
+    if opath.exists(ofpath):
+        return None
+    aZone_points = []
+    for point_info in get_sgPoints():
+        if point_info['geometry'].within(zPoly):
+            aZone_points += [point_info]
+    with open(ofpath, 'wb') as fp:
+        pickle.dump(aZone_points, fp)
+    
+    
+def find_aZone_polygons(zi, zj, zPoly):
+    ofpath = opath.join(dpath['zonePolygons'], 'zonePolygons-zi(%d)zj(%d).pkl' % (zi, zj))
+    if opath.exists(ofpath):
+        return None
+    aZone_polygons = []
+    for poly_info in get_sgPolygons():
+        if poly_info['geometry'].intersects(zPoly) or poly_info['geometry'].within(zPoly):
+            aZone_polygons += [poly_info]
+    with open(ofpath, 'wb') as fp:
+        pickle.dump(aZone_polygons, fp)
+
+
+def classify_aZone_objects(processorID, NUM_WORKERS=11):
+    lons, lats = get_sgGrid()
+    i = 0
+    for zi in xrange(len(lons)):
+        for zj in xrange(len(lats)):
+            i += 1
+            if i % NUM_WORKERS != processorID:
+                continue
+            rightTop = (lons[zi + 1], lats[zj + 1])
+            rightBottom = (lons[zi + 1], lats[zj])
+            leftBottom = (lons[zi], lats[zj])
+            leftTop = (lons[zi], lats[zj + 1])
+            zPoly = Polygon([rightTop, rightBottom, leftBottom, leftTop])
+            find_aZone_points(zi, zj, zPoly)
+            find_aZone_polygons(zi, zj, zPoly)
+
+
 if __name__ == '__main__':
-    print get_sgPoints()
+    pass
+
+
+
+
+    # classify_aZone_objects(0)
+
+

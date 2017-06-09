@@ -8,5 +8,5 @@
 #python -c "from a3_driverTrip import run; run()" &
 
 for i in {0..10}; do
-    python -c "from a4_pickupDistance import run; run($i)" &
+    python -c "from geoFunctions import classify_aZone_objects; classify_aZone_objects($i)" &
 done
