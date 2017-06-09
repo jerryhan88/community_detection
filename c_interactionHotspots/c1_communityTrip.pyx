@@ -36,7 +36,7 @@ def process_group(gn):
                     writer = csv.writer(w_csvfile, lineterminator='\n')
                     new_header = header[:-1]
                     new_header += list(comDrivers)
-                    writer.writerow(header)
+                    writer.writerow(new_header)
             hid = {h: i for i, h in enumerate(header)}
             for row in reader:
                 if int(row[hid['did']]) not in comDrivers:
@@ -57,7 +57,7 @@ def process_group(gn):
                             new_row += [0]
                 with open(ofpath, 'a') as w_csvfile:
                     writer = csv.writer(w_csvfile, lineterminator='\n')
-                    writer.writerow(row)
+                    writer.writerow(new_row)
 
 
 if __name__ == '__main__':
