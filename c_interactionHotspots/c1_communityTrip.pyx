@@ -30,7 +30,7 @@ def process_group(gn):
         with open(ifpath, 'rb') as r_csvfile:
             reader = csv.reader(r_csvfile)
             header = reader.next()
-            if not opath:
+            if not ofpath:
                 ofpath = opath.join(dpath['communityTrip'], 'communityTrip-2009-%s.csv' % gn)
                 with open(ofpath, 'wt') as w_csvfile:
                     writer = csv.writer(w_csvfile, lineterminator='\n')
