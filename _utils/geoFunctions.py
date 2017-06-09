@@ -1,13 +1,18 @@
 import __init__
 from init_project import *
 #
+from logger import get_logger
 import os.path as opath
+from traceback import format_exc
 from geopy.distance import VincentyDistance
 from shapely.geometry import Polygon
 import geopandas as gpd
 import numpy as np
 import pickle
 import csv
+
+
+logger = get_logger()
 
 NORTH, EAST, SOUTH, WEST = 0, 90, 180, 270
 
@@ -120,34 +125,46 @@ def get_sgPolygons():
 
 
 def find_aZone_points(zi, zj, zPoly):
-    ofpath = opath.join(dpath['zonePoints'], 'zonePoints-zi(%d)zj(%d).pkl' % (zi, zj))
-    if opath.exists(ofpath):
-        return None
-    aZone_points = []
-    for point_info in get_sgPoints():
-        if point_info['geometry'].within(zPoly):
-            aZone_points += [point_info]
-    with open(ofpath, 'wb') as fp:
-        pickle.dump(aZone_points, fp)
+    try:
+        ofpath = opath.join(dpath['zonePoints'], 'zonePoints-zi(%d)zj(%d).pkl' % (zi, zj))
+        if opath.exists(ofpath):
+            return None
+        aZone_points = []
+        for point_info in get_sgPoints():
+            if point_info['geometry'].within(zPoly):
+                aZone_points += [point_info]
+        with open(ofpath, 'wb') as fp:
+            pickle.dump(aZone_points, fp)
+    except Exception as _:
+        import sys
+        with open('%s_%d_%d.txt' % (sys.argv[0], zi, zj), 'w') as f:
+            f.write(format_exc())
+        raise
     
     
 def find_aZone_polygons(zi, zj, zPoly):
-    ofpath = opath.join(dpath['zonePolygons'], 'zonePolygons-zi(%d)zj(%d).pkl' % (zi, zj))
-    if opath.exists(ofpath):
-        return None
-    aZone_polygons = []
-    for poly_info in get_sgPolygons():
-        if poly_info['geometry'].intersects(zPoly) or poly_info['geometry'].within(zPoly):
-            aZone_polygons += [poly_info]
-    with open(ofpath, 'wb') as fp:
-        pickle.dump(aZone_polygons, fp)
+    try:
+        ofpath = opath.join(dpath['zonePolygons'], 'zonePolygons-zi(%d)zj(%d).pkl' % (zi, zj))
+        if opath.exists(ofpath):
+            return None
+        aZone_polygons = []
+        for poly_info in get_sgPolygons():
+            if poly_info['geometry'].intersects(zPoly) or poly_info['geometry'].within(zPoly):
+                aZone_polygons += [poly_info]
+        with open(ofpath, 'wb') as fp:
+            pickle.dump(aZone_polygons, fp)
+    except Exception as _:
+        import sys
+        with open('%s_%d_%d.txt' % (sys.argv[0], zi, zj), 'w') as f:
+            f.write(format_exc())
+        raise
 
 
 def classify_aZone_objects(processorID, NUM_WORKERS=11):
     lons, lats = get_sgGrid()
     i = 0
-    for zi in xrange(len(lons)):
-        for zj in xrange(len(lats)):
+    for zi in xrange(len(lons) - 1):
+        for zj in xrange(len(lats) - 1):
             i += 1
             if i % NUM_WORKERS != processorID:
                 continue
@@ -160,8 +177,14 @@ def classify_aZone_objects(processorID, NUM_WORKERS=11):
             find_aZone_polygons(zi, zj, zPoly)
 
 
+
 if __name__ == '__main__':
-    pass
+    ofpath = opath.join(dpath['zonePolygons'], 'zonePolygons-zi(0)zj(6).pkl')
+
+    with open(ofpath, 'rb') as fp:
+        sgPolygons = pickle.load(fp)
+
+    print sgPolygons
 
 
 
