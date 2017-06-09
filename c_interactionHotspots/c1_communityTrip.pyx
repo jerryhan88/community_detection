@@ -22,7 +22,7 @@ def process_group(gn):
     ifpath = opath.join(dpath['graphPartition'], 'graphPartition-%s.pkl' % gn)
     igG = ig.Graph.Read_Pickle(ifpath)
     comDrivers = set(v['name'] for v in igG.vs)
-    ofpath = opath.join(dpath['communityTrip'], 'communityTrip-2009-%s.csv' % gn)
+    ofpath = None
     for fn in os.listdir(dpath['dwellTimeNpriorPresence']):
         if not fn.endswith('.csv'):
             continue
@@ -30,11 +30,13 @@ def process_group(gn):
         with open(ifpath, 'rb') as r_csvfile:
             reader = csv.reader(r_csvfile)
             header = reader.next()
-            with open(ofpath, 'wt') as w_csvfile:
-                writer = csv.writer(w_csvfile, lineterminator='\n')
-                new_header = header[:-1]
-                new_header += list(comDrivers)
-                writer.writerow(header)
+            if not opath:
+                ofpath = opath.join(dpath['communityTrip'], 'communityTrip-2009-%s.csv' % gn)
+                with open(ofpath, 'wt') as w_csvfile:
+                    writer = csv.writer(w_csvfile, lineterminator='\n')
+                    new_header = header[:-1]
+                    new_header += list(comDrivers)
+                    writer.writerow(header)
             hid = {h: i for i, h in enumerate(header)}
             for row in reader:
                 if int(row[hid['did']]) not in comDrivers:
