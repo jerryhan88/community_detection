@@ -1,11 +1,14 @@
 import os.path as opath
-import os
+import statsmodels.api as sm
 import igraph as ig
-import pickle
-import louvain
-import csv
+import pandas as pd
 
-from _utils.logger import get_logger
+import louvain
+import pickle
+
+import csv
+import os
+
 
 dpath = {}
 taxi_data_home = opath.join(opath.join(opath.dirname(opath.realpath(__file__)), '..'), 'taxi_data')
@@ -25,6 +28,7 @@ dpath['individualRelationF'] = opath.join(dpath['home'], 'individualRelationF')
 dpath['graphPartition'] = opath.join(dpath['home'], 'graphPartition')
 #
 dpath['communityTrip'] = opath.join(dpath['home'], 'communityTrip')
+dpath['hotspotDetection'] = opath.join(dpath['home'], 'hotspotDetection')
 #
 dpath['synData'] = opath.join(dpath['home'], 'synData')
 dpath['agtRecord'] = opath.join(dpath['home'], 'agtRecord')
@@ -42,7 +46,7 @@ for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
            'individualRelation', 'individualRelationF', 'graphPartition',
            'synData', 'agtRecord', 'agtPresence', 'agtRelation',
-           'communityTrip',
+           'communityTrip', 'hotspotDetection',
 
 
            'individualCounting']:

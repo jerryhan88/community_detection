@@ -1,6 +1,7 @@
 import __init__
 from init_project import *
 #
+from _utils.logger import get_logger
 logger = get_logger()
 
 
