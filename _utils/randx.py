@@ -1,5 +1,3 @@
-from __future__ import division
-
 from random import random, randint
 
 """
@@ -28,7 +26,7 @@ class ArbRand:
     def __init__(self, e, error=1E-6):
         assert abs(sum(e) - 1.0) <= error
         # Populate b, ia, f
-        b = [x - (1.0 / len(e)) for x in e]
+        b = [x - (1.0 / float(len(e))) for x in e]
         self.f = [0.0] * len(e)
         self.ia = range(len(e))
         #p = [0.0] * len(e)
@@ -64,7 +62,7 @@ def test_ArbRand():
     a = [0] * 3
     for _ in xrange(N):
         a[g.get()] += 1
-    print a, [x / N * 100 for x in a]
+    print a, [x / float(N) * 100 for x in a]
 
 if __name__ == '__main__':
     test_ArbRand()

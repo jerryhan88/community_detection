@@ -2,6 +2,7 @@ from random import expovariate
 from itertools import chain
 from randx import ArbRand
 
+
 class od_matrix(object):
     def __init__(self, N, M):
         '''
@@ -75,8 +76,8 @@ def test():
          [1, 0, 1],
          [2, 2, 0]]
     A = [(100, 0.1), (50, 0.2), (50, 0.3)]
-    #ODM = od_matrix(N, M)
-    ODM = od_matrix(N, M, A)
+    ODM = od_matrix(N, M)
+    # ODM = od_matrix(N, M, A)
     print '\n'.join('%s --> %s: %5.1f%%' % (o, d, p * 100) for ((o, d), p) in zip(ODM.OD, ODM.P))
     for i in xrange(1, 101):
         t, (o, d) = ODM.next_arrival()
