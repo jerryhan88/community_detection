@@ -26,7 +26,7 @@ def process_driver(fn):
         header = reader.next()
         hid = {h: i for i, h in enumerate(header)}
         for row in reader:
-            aid = int(row[hid['aid']])
+            aid = int(row[hid['did']])
             ofpath = opath.join(dpath['agtRecord'], 'agtRecord-%s-%d.csv' % (seedNum, aid))
             if not opath.exists(ofpath):
                 with open(ofpath, 'wt') as w_csvfile:

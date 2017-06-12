@@ -27,13 +27,13 @@ def process_driver(fn):
     ofpath = opath.join(dpath['agtRelation'], 'agtRelation-%s-%s.csv' % (_seedNum, _aid1))
     with open(ofpath, 'wt') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
-        header = ['aid',
+        header = ['did',
                   'numObservations', 'numPrevAgents',
                   'numSigRelationship',
                   'numPosCoef', 'numNegCoef',
                   'sigPosRelation', 'sigNegRelation']
         writer.writerow(header)
-    cns = 'aid zid reward'.split()
+    cns = 'did zid reward'.split()
     prevAgents = [cn for cn in df.columns if cn not in cns]
     sigRelatioin = {k: [] for k in ['pos', 'neg']}
     for _agt0 in prevAgents:

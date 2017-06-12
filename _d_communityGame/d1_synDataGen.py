@@ -16,7 +16,7 @@ def run(seedNum):
     fpath = opath.join(dpath['synData'], 'synData-%d.csv' % seedNum)
     with open(fpath, 'wt') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
-        header = ['iterNum', 'aid', 'zid', 'reward', 'prevAgents', 'cost_memory']
+        header = ['iterNum', 'did', 'zid', 'reward', 'prevAgents', 'cost_memory']
         writer.writerow(header)
 
     # demand_distributions = [
@@ -122,7 +122,7 @@ class agent(object):
         self.cost_memory = [0] * num_zones
 
     def __repr__(self):
-        return 'aid %d' % self.aid
+        return 'did %d' % self.aid
 
     def init_info(self):
         self.info = []

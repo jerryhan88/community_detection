@@ -31,7 +31,7 @@ def process_file(fn):
     ofpath = opath.join(dpath['agtPresence'], 'agtPresence-%s-%s.csv' % (_seedNum, _aid))
     with open(ofpath, 'wt') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
-        new_header = ['aid', 'zid', 'reward']
+        new_header = ['did', 'zid', 'reward']
         new_header += prevAgents
         writer.writerow(new_header)
     #
@@ -40,7 +40,7 @@ def process_file(fn):
         header = reader.next()
         hid = {h: i for i, h in enumerate(header)}
         for row in reader:
-            new_row = [row[hid['aid']], row[hid['zid']], row[hid['reward']]]
+            new_row = [row[hid['did']], row[hid['zid']], row[hid['reward']]]
             row_prevAgents = row[hid['prevAgents']]
             if not row_prevAgents:
                 new_row += [0] * len(prevAgents)
