@@ -17,7 +17,6 @@ def run(processorID, numWorkers=11):
 
 
 def process_group(gn):
-    gn = 'G(10)'
     ifpath = opath.join(dpath['communityTrip'], 'communityTrip-2009-%s.csv' % gn)
     ofpath = opath.join(dpath['hotspotDetection'], 'hotspotDetection-2009-%s.pkl' % gn)
     df = pd.read_csv(ifpath)
@@ -51,31 +50,3 @@ def process_group(gn):
 
 if __name__ == '__main__':
     run(1)
-
-
-
-
-
-# def process_file(tm, year, gt_fpath):
-#     gz_dpath = dpaths[tm, year, 'groupZones']
-#     gz_prefix = prefixs[tm, year, 'groupZones']
-#     df = pd.read_csv(gt_fpath)
-#     assert len(set(df['groupName'])) == 1
-#     gn = df['groupName'][0]
-#     gz_fpath = '%s/%s%s.pkl' % (gz_dpath, gz_prefix, gn)
-#     #
-#     df = df[~(np.abs(df[tm] - df[tm].mean()) > (3 * df[tm].std()))]
-#     groupZones = {}
-#     for zizj, pp_num in df.groupby(['zizj']).sum()['priorPresence'].iteritems():
-#         if pp_num < 2:
-#             continue
-#         zizj_df = df[(df['zizj'] == zizj)]
-#         y = zizj_df[tm]
-#         X = zizj_df['priorPresence']
-#         X = sm.add_constant(X)
-#         res = sm.OLS(y, X, missing='drop').fit()
-#         if res.params['priorPresence'] < 0 and res.pvalues['priorPresence'] < sig_level:
-#             groupZones[zizj] = res.params['priorPresence']
-#     save_pickle_file(gz_fpath, groupZones)
-#
-
