@@ -1,11 +1,9 @@
-from __future__ import division
-
 from random import expovariate
 from itertools import chain
 from randx import ArbRand
 
 class od_matrix(object):
-    def __init__(self, N, M, A=None, start=0.0):
+    def __init__(self, N, M):
         '''
         N: nodes
         M = [m_ij]: OD matrix
@@ -32,35 +30,17 @@ class od_matrix(object):
         assert all(all(mij >= 0 for mij in Mi) for Mi in M)
         X = list(chain(*M))
         self.TAR = sum(X)
-        self.P = [x / self.TAR for x in X]
+        self.P = [x / float(self.TAR) for x in X]
         self.R = ArbRand(self.P)
         self.OD = [(N[i], N[j]) for i in xrange(len(N)) for j in xrange(len(N))]
         # prepare LARS, ICARP, ECARP
-        if A == None:
-            self.A = [(None, self.TAR)]
-            self.LARS = None
-            self.ICARP = 0
-            self.ECARP = 1e400
-        else:
-            assert any(ar > 0 for (_, ar) in A) and all(0 <= ar < 1e400 for (_, ar) in A)
-            self.A = A
-            self.LARS = sum(pl for (pl, _) in self.A)
-            # initial ICARP and ECARP
-            self.ICARP = 0
-            self.ECARP = (start // self.LARS) * self.LARS + self.A[0][0]
-            # find proper ICARP and ECARP.
-            while self.ECARP < start:
-                self.ICARP += 1
-                self.ECARP += self.A[self.ICARP][0]
-            # skip periods with zero arrival rate.
-            while self.A[self.ICARP][1] == 0:
-                self.ICARP += 1
-                if self.ICARP == len(self.A):
-                    self.ICARP = 0
-                start = self.ECARP
-                self.ECARP += self.A[self.ICARP][0]
+        self.A = [(None, self.TAR)]
+        self.LARS = None
+        self.ICARP = 0
+        self.ECARP = 1e400
+
         # set initial NAT.
-        self.NAT = start
+        self.NAT = 0
         self.next_arrival()
 
     def next_arrival(self):
