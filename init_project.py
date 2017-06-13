@@ -1,6 +1,7 @@
 import os.path as opath
-import os
 import pickle
+from fnmatch import fnmatch
+import os
 import csv
 
 from random import random, randint, expovariate, choice, seed
@@ -10,6 +11,7 @@ import igraph as ig
 import louvain
 
 import pandas as pd
+import numpy as np
 import statsmodels.api as sm
 
 
@@ -35,31 +37,34 @@ dpath['graphPartition'] = opath.join(dpath['home'], 'graphPartition')
 dpath['communityTrip'] = opath.join(dpath['home'], 'communityTrip')
 dpath['hotspotDetection'] = opath.join(dpath['home'], 'hotspotDetection')
 #
+dpath['synTrajectory'] = opath.join(dpath['home'], 'synTrajectory')
+dpath['individualTrajectory'] = opath.join(dpath['home'], 'individualTrajectory')
+dpath['presenceBinary'] = opath.join(dpath['home'], 'presenceBinary')
+dpath['driverRelation'] = opath.join(dpath['home'], 'driverRelation')
 
 
 
-
-
-dpath['synData'] = opath.join(dpath['home'], 'synData')
-dpath['agtRecord'] = opath.join(dpath['home'], 'agtRecord')
-dpath['agtPresence'] = opath.join(dpath['home'], 'agtPresence')
-dpath['agtRelation'] = opath.join(dpath['home'], 'agtRelation')
+# dpath['synData'] = opath.join(dpath['home'], 'synData')
+# dpath['agtRecord'] = opath.join(dpath['home'], 'agtRecord')
+# dpath['agtPresence'] = opath.join(dpath['home'], 'agtPresence')
+# dpath['agtRelation'] = opath.join(dpath['home'], 'agtRelation')
 #
 
 
 
 
-dpath['individualCounting'] = opath.join(dpath['home'], 'individualCounting')
+# dpath['individualCounting'] = opath.join(dpath['home'], 'individualCounting')
 
 
 for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
            'individualRelation', 'individualRelationF', 'graphPartition',
            'communityTrip', 'hotspotDetection',
+           'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
 
 
 
-           'synData', 'agtRecord', 'agtPresence', 'agtRelation',
+           # 'synData', 'agtRecord', 'agtPresence', 'agtRelation',
            ]:
     try:
         if not opath.exists(dpath[dn]):

@@ -65,7 +65,8 @@ def process_driver(fn):
                 did0_df['z'+zizj] = np.where(did0_df['zizj'] == zizj, 1, 0)
             if num_encouters < len(zones) + 1 + 1:
                 continue
-
+            if num_encouters < numObservations * 0.05:
+                continue
             y = did0_df['dwellTime']
             X = did0_df[[_did0] + ['z'+zizj for zizj in zones]]
             X = sm.add_constant(X)
