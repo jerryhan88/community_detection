@@ -18,7 +18,7 @@ def run(seedNum):
     fpath = opath.join(dpath['synTrajectory'], 'synTrajectory-%d.csv' % seedNum)
     with open(fpath, 'wt') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
-        header = ['iterNum', 'did', 'zid', 'dwellTime', 'prevDrivers']
+        header = ['iterNum', 'did', 'z', 'DT', 'prevDrivers']
         writer.writerow(header)
     #
     # Define a community structure and generate drivers
@@ -87,46 +87,44 @@ def run(seedNum):
         for d in drivers.itervalues():
             d.rd_info = []
         #
-        unit_arrivals = ODM.get_unit_arrivals()
-        for zid in Z:
-            if not unit_arrivals.has_key(zid):
-                unit_arrivals[zid] = []
+        p_z = ODM.get_unit_arrivals()
+        for z in Z:
+            if not p_z.has_key(z):
+                p_z[z] = []
         #
-        l_drivers, n_drivers = set(), set()
-        for zid, z_drivers in zone_drivers.iteritems():
-            if unit_arrivals.has_key(zid):
-                remaining_demand = len(unit_arrivals[zid]) - len(z_drivers)
+        leaders, fortunateDrivers = set(), set()
+        for z, z_drivers in zone_drivers.iteritems():
+            if p_z.has_key(z):
+                remaining_demand = len(p_z[z]) - len(z_drivers)
                 if remaining_demand > 0:
                     for d in z_drivers:
-                        d.broadcast_info(zid, remaining_demand)
-                        l_drivers.add(d)
+                        d.broadcast_info(z, remaining_demand)
+                        leaders.add(d)
                 elif remaining_demand == 0:
                     for d in z_drivers:
-                        n_drivers.add(d)
-        f_drivers, s_drivers = set(), set()
+                        fortunateDrivers.add(d)
+        followers, unfortunateDrivers = set(), set()
         for d in drivers.itervalues():
-            if d in l_drivers or d in n_drivers:
+            if d in leaders or d in fortunateDrivers:
                 continue
             if d.rd_info:
-                f_drivers.add(d)
+                followers.add(d)
             else:
-                s_drivers.add(d)
-        for s_d in s_drivers:
-            zid = s_d.z
-            init_demand, init_supply = map(len, [unit_arrivals[zid], zone_drivers[zid]])
-            if 0 <= init_demand - init_supply:
-                dwellTime = 0
-            else:
-                total_arrival_rate = sum(M[zid])
-                dwellTime = abs(init_demand - init_supply) / float(total_arrival_rate)
+                unfortunateDrivers.add(d)
+        for uft_d in unfortunateDrivers:
+            z = uft_d.z
+            Dz, Sz = map(len, [p_z[z], zone_drivers[z]])
+            assert Dz - Sz < 0
+            total_arrival_rate = sum(M[z])
+            DT = abs(Dz - Sz) / float(total_arrival_rate)
             prevDrivers = set([])
-            append_record(fpath, numIter, s_d.did, zid, dwellTime, prevDrivers)
+            append_record(fpath, numIter, uft_d.did, z, DT, prevDrivers)
         #
         # choose the zone whose remaining demand is the highest
         #
         fol_maxD_zid = dict()
         zid_followers = {zid: set() for zid in Z}
-        for f_d in f_drivers:
+        for f_d in followers:
             f_d.rd_info.sort(key=lambda x: x[1], reverse=True)
             maxD_zid, _ = f_d.rd_info[0]
             zid_followers[maxD_zid].add(f_d)
@@ -135,56 +133,55 @@ def run(seedNum):
         # calculate dwell time
         #
         profitableF, nonProfitableF = set(), set()
-        for f_d, zid in fol_maxD_zid.iteritems():
-            init_demand, init_supply, addi_supply = map(len,
-                                                        [unit_arrivals[zid], zone_drivers[zid], zid_followers[zid]])
-            last_demand = (init_demand - init_supply) - addi_supply
+        for f_d, z in fol_maxD_zid.iteritems():
+            Dz, Sz, Fz = map(len, [p_z[z], zone_drivers[z], zid_followers[z]])
+            last_demand = (Dz - Sz) - Fz
             if 0 <= last_demand:
-                dwellTime = 0
+                DT = 0
                 profitableF.add(f_d)
             else:
-                total_arrival_rate = sum(M[zid])
-                dwellTime = abs(last_demand) / float(total_arrival_rate)
+                total_arrival_rate = sum(M[z])
+                DT = abs(last_demand) / float(total_arrival_rate)
                 nonProfitableF.add(f_d)
-            prevDrivers = set([d for d in zone_drivers[zid] if d in l_drivers or d in n_drivers])
-            append_record(fpath, numIter, f_d.did, zid, dwellTime, prevDrivers)
+            prevDrivers = set([d for d in zone_drivers[z] if d in leaders or d in fortunateDrivers])
+            append_record(fpath, numIter, f_d.did, z, DT, prevDrivers)
         #
         if DISPLAY_LOG:
             print
             print '------------------------------------%d' % numIter
             print 'current driver position'
-            for zid, z_drivers in zone_drivers.iteritems():
-                print 'zid %d: %s' % (zid, str(z_drivers))
+            for z, z_drivers in zone_drivers.iteritems():
+                print 'z %d: %s' % (z, str(z_drivers))
             print
             print 'unit arrivals'
-            for zid in Z:
-                print 'zid %d: %s' % (zid, str(unit_arrivals[zid]))
+            for z in Z:
+                print 'z %d: %s' % (z, str(p_z[z]))
             print
-            print 'l_drivers: %s' % str([str(d) for d in l_drivers])
-            print 'n_drivers: %s' % str([str(d) for d in n_drivers])
-            print 's_drivers: %s' % str([str(d) for d in s_drivers])
-            print 'f_drivers: %s' % str([str(d) for d in f_drivers])
+            print 'leaders: %s' % str([str(d) for d in leaders])
+            print 'fortunateDrivers: %s' % str([str(d) for d in fortunateDrivers])
+            print 'unfortunateDrivers: %s' % str([str(d) for d in unfortunateDrivers])
+            print 'followers: %s' % str([str(d) for d in followers])
             print '\t\t profitableF: %s' % str([str(d) for d in profitableF])
             print '\t\t nonProfitableF: %s' % str([str(d) for d in nonProfitableF])
             print
         #
         # update positions
         #
-        for ln_d in list(l_drivers) + list(n_drivers):
+        for ln_d in list(leaders) + list(fortunateDrivers):
             fz = ln_d.z
             zone_drivers[fz].remove(ln_d)
             #
-            tz = unit_arrivals[fz].pop()
+            tz = p_z[fz].pop()
             zone_drivers[tz].add(ln_d)
             ln_d.set_zone(tz)
         #
-        for f_d in f_drivers:
+        for f_d in followers:
             fz = f_d.z
             zone_drivers[fz].remove(f_d)
             #
             moved_zid = fol_maxD_zid[f_d]
             if f_d in profitableF:
-                tz = unit_arrivals[moved_zid].pop()
+                tz = p_z[moved_zid].pop()
             elif f_d in nonProfitableF:
                 tz = OMs[moved_zid].get()
             else:
@@ -192,13 +189,13 @@ def run(seedNum):
             zone_drivers[tz].add(f_d)
             f_d.set_zone(tz)
         #
-        for s_d in s_drivers:
-            fz =s_d.z
-            zone_drivers[fz].remove(s_d)
+        for uft_d in unfortunateDrivers:
+            fz =uft_d.z
+            zone_drivers[fz].remove(uft_d)
             #
             tz = OMs[fz].get()
-            zone_drivers[tz].add(s_d)
-            s_d.set_zone(tz)
+            zone_drivers[tz].add(uft_d)
+            uft_d.set_zone(tz)
         #
         numIter += 1
 
