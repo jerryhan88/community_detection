@@ -6,8 +6,8 @@
 #$ -m e
 #$ -M ckhan.2015@phdis.smu.edu.sg
 ##$ -q "express.q"
-#$ -q "short.q"
-##$ -q "long.q"
+##$ -q "short.q"
+#$ -q "long.q"
 
 
 processorID=$1

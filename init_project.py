@@ -1,6 +1,7 @@
 import os.path as opath
 import pickle
 from fnmatch import fnmatch
+from traceback import format_exc
 import os
 import csv
 
@@ -42,6 +43,8 @@ dpath['synTrajectory'] = opath.join(dpath['home'], 'synTrajectory')
 dpath['individualTrajectory'] = opath.join(dpath['home'], 'individualTrajectory')
 dpath['presenceBinary'] = opath.join(dpath['home'], 'presenceBinary')
 dpath['driverRelation'] = opath.join(dpath['home'], 'driverRelation')
+#
+dpath['countRelation'] = opath.join(dpath['home'], 'countRelation')
 
 
 
@@ -50,8 +53,8 @@ for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
            'individualRelation', 'graphPartition',
            'communityTrip', 'hotspotDetection',
-
            'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
+           'countRelation',
            ]:
     try:
         if not opath.exists(dpath[dn]):

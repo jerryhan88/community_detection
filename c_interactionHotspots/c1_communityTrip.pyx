@@ -14,8 +14,6 @@ def run(processorID, numWorkers=11):
         xComDrivers.add(int(_did))
     #
     for i, fn in enumerate(os.listdir(dpath['graphPartition'])):
-        if i % numWorkers != processorID:
-            continue
         if not fn.endswith('.pkl'):
             continue
         if 2 < len(fn.split('-')):
@@ -27,7 +25,10 @@ def run(processorID, numWorkers=11):
         igG = ig.Graph.Read_Pickle(ifpath)
         comDrivers = set(v['name'] for v in igG.vs)
         xComDrivers = xComDrivers - comDrivers
+        if i % numWorkers != processorID:
+            continue
         process_group(gn, comDrivers)
+    #
     if processorID == 0:
         gn = 'X'
         process_group(gn, xComDrivers)
