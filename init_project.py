@@ -26,12 +26,13 @@ dpath['zonePolygons'] = opath.join(dpath['geo'], 'zonePolygons')
 ZONE_UNIT_KM = 0.5
 # --------------------------------------------------------------
 dpath['home'] = opath.join(taxi_data_home, 'communityDetection')
+#
 dpath['singleShift'] = opath.join(dpath['home'], 'singleShift')
 dpath['dwellTimeNpriorPresence'] = opath.join(dpath['home'], 'dwellTimeNpriorPresence')
 dpath['driverTrip'] = opath.join(dpath['home'], 'driverTrip')
 dpath['pickupDistance'] = opath.join(dpath['home'], 'pickupDistance')
+#
 dpath['individualRelation'] = opath.join(dpath['home'], 'individualRelation')
-dpath['individualRelationF'] = opath.join(dpath['home'], 'individualRelationF')
 dpath['graphPartition'] = opath.join(dpath['home'], 'graphPartition')
 #
 dpath['communityTrip'] = opath.join(dpath['home'], 'communityTrip')
@@ -44,27 +45,13 @@ dpath['driverRelation'] = opath.join(dpath['home'], 'driverRelation')
 
 
 
-# dpath['synData'] = opath.join(dpath['home'], 'synData')
-# dpath['agtRecord'] = opath.join(dpath['home'], 'agtRecord')
-# dpath['agtPresence'] = opath.join(dpath['home'], 'agtPresence')
-# dpath['agtRelation'] = opath.join(dpath['home'], 'agtRelation')
-#
-
-
-
-
-# dpath['individualCounting'] = opath.join(dpath['home'], 'individualCounting')
-
 
 for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
-           'individualRelation', 'individualRelationF', 'graphPartition',
+           'individualRelation', 'graphPartition',
            'communityTrip', 'hotspotDetection',
+
            'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
-
-
-
-           # 'synData', 'agtRecord', 'agtPresence', 'agtRelation',
            ]:
     try:
         if not opath.exists(dpath[dn]):

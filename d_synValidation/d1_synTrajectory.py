@@ -25,7 +25,7 @@ def run(seedNum):
     #
     com_structure = [
         [1],
-        [2, 3],
+        [2], [3],
         [4, 5, 6],
         [7, 8, 9],
         [10, 11, 12]
@@ -59,7 +59,7 @@ def run(seedNum):
         [1, 1, 0, 0, 1, 0, 0, 0, 0, 0]
     ]
 
-    # M = gen_M(20, 0.2)
+    # M = gen_M(20, 0.35)
 
     Z = [x for x in xrange(len(M))]
 
@@ -80,7 +80,7 @@ def run(seedNum):
     #
     # Run simulation
     #
-    maxNumIter = 5000
+    maxNumIter = 10000
     numIter = 0
     while numIter < maxNumIter:
 
@@ -228,10 +228,9 @@ def gen_M(numZones, p):
             if i == j:
                 continue
             if random() < p:
-                M[i][j] = randint(0, 4)
+                M[i][j] = randint(0, 3)
     return M
 
 
 if __name__ == '__main__':
-
-    run(5)
+    run(3)

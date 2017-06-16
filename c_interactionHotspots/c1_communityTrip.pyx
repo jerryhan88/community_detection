@@ -6,6 +6,13 @@ logger = get_logger()
 
 
 def run(processorID, numWorkers=11):
+    xComDrivers = set()
+    for fn in os.listdir(dpath['driverTrip']):
+        if not fn.endswith('.csv'):
+            continue
+        _, _, _did = fn[:-len('.csv')].split('-')
+        xComDrivers.add(int(_did))
+    #
     for i, fn in enumerate(os.listdir(dpath['graphPartition'])):
         if i % numWorkers != processorID:
             continue
@@ -16,13 +23,17 @@ def run(processorID, numWorkers=11):
         _, gn = fn[:-len('.pkl')].split('-')
         if gn in ['original', 'drivers']:
             continue
-        process_group(gn)
+        ifpath = opath.join(dpath['graphPartition'], 'graphPartition-%s.pkl' % gn)
+        igG = ig.Graph.Read_Pickle(ifpath)
+        comDrivers = set(v['name'] for v in igG.vs)
+        xComDrivers = xComDrivers - comDrivers
+        process_group(gn, comDrivers)
+    if processorID == 0:
+        gn = 'X'
+        process_group(gn, xComDrivers)
 
 
-def process_group(gn):
-    ifpath = opath.join(dpath['graphPartition'], 'graphPartition-%s.pkl' % gn)
-    igG = ig.Graph.Read_Pickle(ifpath)
-    comDrivers = set(v['name'] for v in igG.vs)
+def process_group(gn, comDrivers):
     ofpath = None
     for fn in os.listdir(dpath['dwellTimeNpriorPresence']):
         if not fn.endswith('.csv'):

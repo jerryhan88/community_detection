@@ -1,6 +1,7 @@
 import __init__
 from init_project import *
 #
+from _utils.logger import get_logger
 logger = get_logger()
 
 
@@ -14,11 +15,13 @@ def run():
         writer.writerow(['groupName', 'numDrivers', 'numRelations', 'graphComplexity', 'tieStrength', 'contribution', 'benCon'])
     logger.info('Start handling SP_group_dpath')
     orignal_graph = {}
-    for i, fn in enumerate(os.listdir(dpath['individualRelationF'])):
+    for i, fn in enumerate(os.listdir(dpath['individualRelation'])):
         if not fn.endswith('.csv'):
             continue
+        if len(fn[:-len('.csv')].split('-')) != 3:
+            continue
         _, _year, _did1 = fn[:-len('.csv')].split('-')
-        fpath = opath.join(dpath['individualRelationF'], 'sigRelation-%s-%s.pkl' % (_year, _did1))
+        fpath = opath.join(dpath['individualRelation'], 'sigRelation-%s-%s.pkl' % (_year, _did1))
         if not opath.exists(fpath):
             continue
         sigRelatioin = None
@@ -63,11 +66,9 @@ def run():
         gl_img_fpath = opath.join(dpath['graphPartition'], 'graphPartition-img-%s.pdf' % gn)
         layout = sg.layout("kk")
         if len(drivers) < 100:
-            ig.plot(sg, gl_img_fpath, layout=layout, vertex_label=drivers)
-            pass
+            ig.plot(sg, gl_img_fpath, layout=layout, vertex_label=drivers, vertex_color='white')
         else:
-            ig.plot(sg, gl_img_fpath, layout=layout)
-            pass
+            ig.plot(sg, gl_img_fpath, layout=layout, vertex_color='white')
         gn_drivers[gn] = drivers
         gc_fpath = opath.join(dpath['graphPartition'], 'graphPartition-coef-%s.pkl' % gn)
         with open(gc_fpath, 'wt') as w_csvfile:

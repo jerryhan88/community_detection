@@ -37,4 +37,4 @@ def process_driver(fn):
 
 
 if __name__ == '__main__':
-    run(5)
+    run(3)

@@ -13,6 +13,6 @@
 processorID=$1
 
 source ~/.bashrc
-cd /scratch/ckhan.2015/community_detection/a_dataProcessing
+cd /scratch/ckhan.2015/community_detection/c_interactionHotspots
 
-python -c "from b1_individualRelation import run; run($processorID)"
+python -c "from c1_communityTrip import run; run($processorID, 64)"
