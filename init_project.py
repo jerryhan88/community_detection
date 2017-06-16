@@ -44,7 +44,7 @@ dpath['individualTrajectory'] = opath.join(dpath['home'], 'individualTrajectory'
 dpath['presenceBinary'] = opath.join(dpath['home'], 'presenceBinary')
 dpath['driverRelation'] = opath.join(dpath['home'], 'driverRelation')
 #
-dpath['countRelation'] = opath.join(dpath['home'], 'countRelation')
+dpath['interactionCount'] = opath.join(dpath['home'], 'interactionCount')
 
 
 
@@ -54,7 +54,7 @@ for dn in ['home', 'singleShift',
            'individualRelation', 'graphPartition',
            'communityTrip', 'hotspotDetection',
            'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
-           'countRelation',
+           'interactionCount',
            ]:
     try:
         if not opath.exists(dpath[dn]):

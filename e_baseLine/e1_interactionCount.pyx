@@ -22,7 +22,7 @@ def process_driver(fn):
     logger.info('handling %s' % fn)
     try:
         _, yyyy, _did1 = fn[:-len('.csv')].split('-')
-        ofpath = opath.join(dpath['relationshipCount'], 'relationshipCount-%s-%s.pkl' % (yyyy, _did1))
+        ofpath = opath.join(dpath['interactionCount'], 'interactionCount-%s-%s.pkl' % (yyyy, _did1))
         if opath.exists(ofpath):
             return None
         ifpath = opath.join(dpath['pickupDistance'], fn)
