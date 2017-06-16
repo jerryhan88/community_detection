@@ -27,12 +27,13 @@ def process_driver(fn):
             return None
         ifpath = opath.join(dpath['pickupDistance'], fn)
         df = pd.read_csv(ifpath)
+        df = df[(df['dwellTime'] != 0) & (df['dwellTime'] < HOUR1)]
         cns = 'year month day hour time lon lat distance duration fare did zi zj dwellTime'.split()
         prevDrivers = [cn for cn in df.columns if cn not in cns]
         relationCount = {int(_did0): len(df[(df[_did0] != 0)]) for _did0 in prevDrivers}
         #
         with open(ofpath, 'wb') as fp:
-            pickle.dump(relationCount, fp)
+            pickle.dump([len(df), relationCount], fp)
     except Exception as _:
         import sys
         with open('%s_%s.txt' % (sys.argv[0], fn), 'w') as f:
