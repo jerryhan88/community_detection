@@ -43,10 +43,8 @@ def process_group(gn, comDrivers):
     yy = '09'
     productive_state = ['dur%d' % x for x in [0, 3, 4, 5, 6, 7, 8, 9, 10]]
     shift_dpath, shift_prefix = '/home/sfcheng/toolbox/results', 'shift-hour-state-'
-    print 'start'
     for fn in os.listdir(shift_dpath):
-        print fn
-        if not fnmatch(fn, '%s%s*.csv' % (shift_prefix, yy)):
+        if not fnmatch(fn, '%s%s*.csv.gz' % (shift_prefix, yy)):
             continue
         fpath = '%s/%s' % (shift_dpath, fn)
         with gzip.open(fpath, 'rt') as r_csvfile:
