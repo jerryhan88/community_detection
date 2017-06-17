@@ -15,4 +15,4 @@ processorID=$1
 source ~/.bashrc
 cd /scratch/ckhan.2015/community_detection/c_interactionHotspots
 
-python -c "from c1_communityTrip import run; run($processorID, 64)"
+python -c "from c1_communityTripWP import run; run($processorID, 64)"

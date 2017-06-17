@@ -3,7 +3,8 @@ import pickle
 from fnmatch import fnmatch
 from traceback import format_exc
 import os
-import csv
+import csv, gzip
+from datetime import datetime
 
 from random import random, randint, expovariate, choice, seed
 from itertools import chain
@@ -37,6 +38,13 @@ dpath['individualRelation'] = opath.join(dpath['home'], 'individualRelation')
 dpath['graphPartition'] = opath.join(dpath['home'], 'graphPartition')
 #
 dpath['communityTrip'] = opath.join(dpath['home'], 'communityTrip')
+dpath['communityTripWP'] = opath.join(dpath['home'], 'communityTripWP')
+dpath['communityProdDuration'] = opath.join(dpath['home'], 'communityProdDuration')
+
+
+
+dpath['communityStatistics'] = opath.join(dpath['home'], 'communityStatistics')
+
 dpath['hotspotDetection'] = opath.join(dpath['home'], 'hotspotDetection')
 #
 dpath['synTrajectory'] = opath.join(dpath['home'], 'synTrajectory')
@@ -45,16 +53,25 @@ dpath['presenceBinary'] = opath.join(dpath['home'], 'presenceBinary')
 dpath['driverRelation'] = opath.join(dpath['home'], 'driverRelation')
 #
 dpath['interactionCount'] = opath.join(dpath['home'], 'interactionCount')
-
+dpath['graphPartitionC'] = opath.join(dpath['home'], 'graphPartitionC')
+dpath['baselineTrip'] = opath.join(dpath['home'], 'baselineTrip')
+dpath['baselineTripWP'] = opath.join(dpath['home'], 'baselineTripWP')
 
 
 
 for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
            'individualRelation', 'graphPartition',
-           'communityTrip', 'hotspotDetection',
+           'communityTrip', 'communityTripWP',
+           'communityProdDuration',
+
+
+           'communityStatistics', 'hotspotDetection',
            'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
-           'interactionCount',
+           'interactionCount', 'graphPartitionC', 'baselineTrip', 'baselineTripWP',
+
+
+
            ]:
     try:
         if not opath.exists(dpath[dn]):
