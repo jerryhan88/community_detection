@@ -55,7 +55,7 @@ def process_group(gn, comDrivers):
                 did1 = int(row[hid['driver-id']])
                 if did1 not in comDrivers:
                     continue
-                month, day, hour = map(int, [row[cn] for cn in 'month day hour'.split()])
+                month, day, hour = map(int, [row[hid[cn]] for cn in 'month day hour'.split()])
                 cur_dtT = datetime(2009, month, day, hour)
                 if cur_dtT.weekday() in [FRI, SAT, SUN]:
                     continue
