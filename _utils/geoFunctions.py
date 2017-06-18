@@ -10,7 +10,8 @@ import geopandas as gpd
 import numpy as np
 import pickle
 import csv
-
+import webbrowser
+import folium
 
 logger = get_logger()
 
@@ -179,6 +180,34 @@ def classify_aZone_objects(processorID, NUM_WORKERS=11):
             find_aZone_points(zi, zj, zPoly, sgPoints)
             find_aZone_polygons(zi, zj, zPoly, sgPolygons)
 
+
+def viz_interactionHotspots(hotspots, path=None):
+    lons, lats = get_sgGrid()
+    lon0, lon1 = lons[0], lons[-1]
+    lat0, lat1 = lats[0], lats[-1]
+    lonC, latC = (lon0 + lon1) / 2.0, (lat0 + lat1) / 2.0
+    #
+    map_osm = folium.Map(location=[latC, lonC], zoom_start=12)
+    for zi, zj, w in hotspots:
+        lon0, lat0 = lons[zi], lats[zj]
+        lon1, lat1 = lons[zi + 1], lats[zj + 1]
+        lonC, latC = (lon0 + lon1) / 2.0, (lat0 + lat1) / 2.0
+        folium.Marker((latC, lonC), popup='zid (%d, %d): %.2f' % (zi, zj, w),
+                      icon=folium.Icon(color='red')
+                      ).add_to(map_osm)
+    for lon in lons:
+        sx, sy, ex, ey = lon, lats[0], lon, lats[-1]
+        map_osm.add_children(folium.PolyLine(locations=[(sy, sx), (ey, ex)], weight=1.0))
+    for lat in lats:
+        sx, sy, ex, ey = lons[0], lat, lons[-1], lat
+        map_osm.add_children(folium.PolyLine(locations=[(sy, sx), (ey, ex)], weight=1.0))
+    if path == None:
+        fpath = opath.join(opath.join(opath.dirname(__file__), 'test.html'))
+        map_osm.save(fpath)
+        html_url = 'file://%s' % fpath
+        webbrowser.get('safari').open_new(html_url)
+    else:
+        map_osm.save(path)
 
 
 if __name__ == '__main__':

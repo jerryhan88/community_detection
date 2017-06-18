@@ -16,7 +16,12 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from PIL import Image
 
+import enchant
 
 
 dpath = {}
@@ -40,6 +45,8 @@ dpath['graphPartition'] = opath.join(dpath['home'], 'graphPartition')
 dpath['communityTrip'] = opath.join(dpath['home'], 'communityTrip')
 dpath['communityTripWP'] = opath.join(dpath['home'], 'communityTripWP')
 dpath['communityProdDuration'] = opath.join(dpath['home'], 'communityProdDuration')
+dpath['communityStats'] = opath.join(dpath['home'], 'communityStats')
+
 
 
 
@@ -56,7 +63,9 @@ dpath['interactionCount'] = opath.join(dpath['home'], 'interactionCount')
 dpath['graphPartitionC'] = opath.join(dpath['home'], 'graphPartitionC')
 dpath['baselineTrip'] = opath.join(dpath['home'], 'baselineTrip')
 dpath['baselineTripWP'] = opath.join(dpath['home'], 'baselineTripWP')
-
+#
+dpath['graphComparision'] = opath.join(dpath['home'], 'graphComparision')
+dpath['graphStats'] = opath.join(dpath['home'], 'graphStats')
 
 
 for dn in ['home', 'singleShift',
@@ -69,6 +78,8 @@ for dn in ['home', 'singleShift',
            'communityStatistics', 'hotspotDetection',
            'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
            'interactionCount', 'graphPartitionC', 'baselineTrip', 'baselineTripWP',
+
+           'graphComparision', 'graphStats'
 
 
 

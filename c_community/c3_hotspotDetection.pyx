@@ -1,10 +1,7 @@
 import __init__
 from init_project import *
 
-
-
 HOUR1 = 3600
-
 
 def run(processorID, numWorkers=11):
     for i, fn in enumerate(os.listdir(dpath['communityTrip'])):
