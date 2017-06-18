@@ -54,7 +54,7 @@ def process_group(gn):
     farePT = (fare / 100.0) / float(numTrips)
     dwellTimePT = (dwellTime / 60.0) / float(numTrips)
     #
-    with open(ofpath, 'wt') as w_csvfile:
+    with open(ofpath, 'a') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
         writer.writerow([gn,
                          numNodes, numEdges, graphDensity, avgEdgeW,
