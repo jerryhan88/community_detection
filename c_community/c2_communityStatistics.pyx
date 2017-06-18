@@ -30,7 +30,7 @@ def process_group(gn):
     igG = ig.Graph.Read_Pickle(graph_fpath)
     numNodes, numEdges = len(igG.vs), len(igG.es)
     graphDensity = numEdges / float(numNodes * (numNodes - 1))
-    avgEdgeW = sum([e['weight'] for e in igG.es]) / 60.0
+    avgEdgeW = (sum([e['weight'] for e in igG.es]) / 60.0) / numEdges
     #
     trip_fpath = opath.join(dpath['communityTripWP'], 'communityTripWP-2009-%s.csv' % gn)
     proDur_fpath = opath.join(dpath['communityProdDuration'], 'communityProdDuration-2009-%s.csv' % gn)

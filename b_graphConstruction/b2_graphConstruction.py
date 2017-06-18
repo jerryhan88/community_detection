@@ -70,7 +70,7 @@ def run():
         else:
             ig.plot(sg, gl_img_fpath, layout=layout, vertex_color='white')
         gn_drivers[gn] = drivers
-        gc_fpath = opath.join(dpath['graphPartition'], 'graphPartition-coef-%s.pkl' % gn)
+        gc_fpath = opath.join(dpath['graphPartition'], 'graphPartition-coef-%s.csv' % gn)
         with open(gc_fpath, 'wt') as w_csvfile:
             writer = csv.writer(w_csvfile, lineterminator='\n')
             writer.writerow(['groupName', 'did0', 'did1', 'coef'])
