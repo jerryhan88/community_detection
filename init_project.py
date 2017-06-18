@@ -72,10 +72,7 @@ for dn in ['home', 'singleShift',
            'dwellTimeNpriorPresence', 'driverTrip', 'pickupDistance',
            'individualRelation', 'graphPartition',
            'communityTrip', 'communityTripWP',
-           'communityProdDuration',
-
-
-           'communityStatistics', 'hotspotDetection',
+           'communityProdDuration', 'communityStats','hotspotDetection',
            'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
            'interactionCount', 'graphPartitionC', 'baselineTrip', 'baselineTripWP',
 
