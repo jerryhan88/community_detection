@@ -21,7 +21,7 @@ import statsmodels.api as sm
 # import matplotlib.pyplot as plt
 # from PIL import Image
 
-import enchant
+# import enchant
 
 
 dpath = {}
