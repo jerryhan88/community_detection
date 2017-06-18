@@ -16,7 +16,7 @@ def run(processorID, numWorkers=11):
 
 
 def process_group(gn):
-    ofpath = opath.join(dpath['communityStats'], 'communityStats-2009-%s.pkl' % gn)
+    ofpath = opath.join(dpath['communityStats'], 'communityStats-2009-%s.csv' % gn)
     with open(ofpath, 'wt') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
         writer.writerow(['comName',
