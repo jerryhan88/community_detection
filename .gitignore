@@ -4,3 +4,7 @@
 *.pyc
 build/
 
+*.log
+*.html
+*.png
+

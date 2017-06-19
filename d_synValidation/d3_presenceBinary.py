@@ -18,7 +18,7 @@ def process_file(fn):
         header = reader.next()
         hid = {h: i for i, h in enumerate(header)}
         for row in reader:
-            priorPresence = row[hid['prevDrivers']]
+            priorPresence = row[hid['PD']]
             if not priorPresence:
                 continue
             for _did0 in priorPresence.split('|'):
@@ -38,8 +38,8 @@ def process_file(fn):
         header = reader.next()
         hid = {h: i for i, h in enumerate(header)}
         for row in reader:
-            new_row = [row[hid[cn]] for cn in 'did zid dwellTime'.split()]
-            row_prevDrivers = row[hid['prevDrivers']]
+            new_row = [row[hid[cn]] for cn in 'did z DT'.split()]
+            row_prevDrivers = row[hid['PD']]
             if not row_prevDrivers:
                 new_row += [0] * len(prevDrivers)
             else:
@@ -55,4 +55,4 @@ def process_file(fn):
 
 
 if __name__ == '__main__':
-    run(3)
+    run(2)
