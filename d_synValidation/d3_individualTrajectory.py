@@ -3,30 +3,21 @@ from init_project import *
 #
 from _utils.logger import get_logger
 #
-from geopy.distance import vincenty
-from math import sqrt
-import csv
-
 
 logger = get_logger()
 
 
-def run(seedNum):
-    for fn in os.listdir(dpath['synTrajectory']):
-        if not fn.endswith('%d.csv' % seedNum):
-            continue
-        process_driver(fn)
-
-
-def process_driver(fn):
-    _, seedNum = fn[:-len('.csv')].split('-')
-    with open(opath.join(dpath['synTrajectory'], fn), 'rb') as r_csvfile:
+def split_trips(sn, ps, cs, ns, da):
+    fn = 'synTrajectory-seed(%d)-ps(%.2f)-cs(%s)-ns(%s)-da(%s).csv' % (sn, ps, cs, ns, da)
+    ifpath = opath.join(dpath['synTrajectory'], fn)
+    with open(ifpath, 'rb') as r_csvfile:
         reader = csv.reader(r_csvfile)
         header = reader.next()
         hid = {h: i for i, h in enumerate(header)}
         for row in reader:
-            aid = int(row[hid['did']])
-            ofpath = opath.join(dpath['individualTrajectory'], 'individualTrajectory-%s-%d.csv' % (seedNum, aid))
+            did = int(row[hid['did']])
+            fn = 'individualTrajectory-seed(%d)-ps(%.2f)-cs(%s)-ns(%s)-da(%s)-did(%d).csv' % (sn, ps, cs, ns, da, did)
+            ofpath = opath.join(dpath['individualTrajectory'], fn)
             if not opath.exists(ofpath):
                 with open(ofpath, 'wt') as w_csvfile:
                     writer = csv.writer(w_csvfile, lineterminator='\n')
@@ -37,4 +28,4 @@ def process_driver(fn):
 
 
 if __name__ == '__main__':
-    run(2)
+    pass

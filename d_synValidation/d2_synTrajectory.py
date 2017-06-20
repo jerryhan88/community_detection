@@ -8,14 +8,13 @@ from _utils.randx import ArbRand
 DISPLAY_LOG = False
 
 
-def gen_synTrajectories(seedNum, CS, ODM, maxIterNum=10000):
+def gen_synTrajectories(fpath, seedNum, CS, ODM, pStrength, maxIterNum=5000):
     def append_record(fpath, numIter, did, zid, dwellTime, prevDrivers):
         with open(fpath, 'a') as w_csvfile:
             writer = csv.writer(w_csvfile, lineterminator='\n')
             writer.writerow([numIter, did, zid, dwellTime, '|'.join(['%d' % d.did for d in prevDrivers])])
     #
     seed(seedNum)
-    fpath = opath.join(dpath['synTrajectory'], 'synTrajectory-%d.csv' % seedNum)
     with open(fpath, 'wt') as w_csvfile:
         writer = csv.writer(w_csvfile, lineterminator='\n')
         header = ['iterNum', 'did', 'z', 'DT', 'PD']
@@ -64,35 +63,57 @@ def gen_synTrajectories(seedNum, CS, ODM, maxIterNum=10000):
                 FD.add(d0)
         F = set([d for d in D.itervalues() if Zd[d] and d not in L and d not in FD])
         UD = set(D.values()) - L - FD - F
-        for d in UD:
-            assert nz[ld[d]] - len(Dz[ld[d]]) < 0
-            TARz = sum(ODM[ld[d]])
-            DT = (len(Dz[ld[d]]) - nz[ld[d]]) / float(TARz)
-            PD = set([])
-            append_record(fpath, iterNum, d.did, ld[d], DT, PD)
         #
         Fz = {zid: set() for zid in Z}
+        for d in UD:
+            if random() < pStrength:
+                max_dsGAP, max_id = -1e400, None
+                for zid, dsGAP in d.dsGAP_memory.iteritems():
+                    if zid == ld[d]:
+                        continue
+                    if max_dsGAP < dsGAP:
+                        max_dsGAP = dsGAP
+                        max_id = zid
+                if max_id != None:
+                    Fz[max_id].add(d)
+                    gd[d] = max_id
         for d in F:
             max_dsGAP, max_id = -1e400, None
             for zid in Zd[d]:
                 if max_dsGAP < (nz[zid] - len(Dz[zid])):
                     max_dsGAP = nz[zid] - len(Dz[zid])
                     max_id = zid
+            if random() < pStrength:
+                for zid, dsGAP in d.dsGAP_memory.iteritems():
+                    if zid == ld[d]:
+                        continue
+                    if max_dsGAP < dsGAP:
+                        max_dsGAP = dsGAP
+                        max_id = zid
+            assert max_id != None
             Fz[max_id].add(d)
             gd[d] = max_id
-        #
-        for d in F:
-            if nz[gd[d]] - len(Dz[gd[d]]) - len(Fz[gd[d]]) >= 0:
-                DT = 0
+
+        for d in list(UD) + list(F):
+            if gd[d] == None:
+                assert d not in F
+                assert nz[ld[d]] - len(Dz[ld[d]]) < 0
+                TARz = sum(ODM[ld[d]])
+                DT = (len(Dz[ld[d]]) - nz[ld[d]]) / float(TARz)
+                PD = set([])
+                append_record(fpath, iterNum, d.did, ld[d], DT, PD)
             else:
-                TARz = sum(ODM[gd[d]])
-                DT = (len(Dz[gd[d]]) + len(Fz[gd[d]]) - nz[gd[d]]) / float(TARz)
-            PD = Dz[gd[d]]
-            append_record(fpath, iterNum, d.did, gd[d], DT, PD)
+                if nz[gd[d]] - len(Dz[gd[d]]) - len(Fz[gd[d]]) >= 0:
+                    DT = 0
+                else:
+                    TARz = sum(ODM[gd[d]])
+                    DT = (len(Dz[gd[d]]) + len(Fz[gd[d]]) - nz[gd[d]]) / float(TARz)
+                PD = Dz[gd[d]]
+                append_record(fpath, iterNum, d.did, gd[d], DT, PD)
         #
         Dz = {zid: set() for zid in Z}
         for d in D.itervalues():
-            if d in F:
+            if gd[d] != None:
                 zid = Bz[gd[d]].get()
             else:
                 zid = Bz[ld[d]].get()
