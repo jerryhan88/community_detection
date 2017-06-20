@@ -65,4 +65,4 @@ def process_instances(ofpath, ps, cs, ns, da):
 
 
 if __name__ == '__main__':
-    run(0)
+    run()
