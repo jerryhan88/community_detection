@@ -10,17 +10,14 @@ from d5_driverRelation import do_regression
 
 def run(processorID, numWorkers=11):
     i = -1
-    for sn in range(numSimRun + 1, 20):
+    for sn in range(numSimRun + 1, numSimRun + 20):
         for ps in prefStrength:
             for cs in f_map_comStructure.iterkeys():
                 for (ns, da) in f_map_netDemand:
                     i += 1
-                    print i
                     if i % numWorkers != processorID:
                         continue
-
                     fn = 'synTrajectory-seed(%d)-ps(%.2f)-cs(%s)-ns(%s)-da(%s).csv' % (sn, ps, cs, ns, da)
-                    print fn
                     fpath = opath.join(dpath['synTrajectory'], fn)
                     CS = f_map_comStructure[cs]()
                     ODM = f_map_netDemand[(ns, da)]()
