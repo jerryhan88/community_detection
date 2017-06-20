@@ -10,7 +10,7 @@ from d5_driverRelation import do_regression
 
 def run(processorID, numWorkers=11):
     i = -1
-    for sn in range(numSimRun + 1, numSimRun + 20):
+    for sn in range(numSimRun + 21, numSimRun + 50):
         for ps in prefStrength:
             for cs in f_map_comStructure.iterkeys():
                 for (ns, da) in f_map_netDemand:
