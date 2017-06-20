@@ -58,6 +58,10 @@ dpath['synTrajectory'] = opath.join(dpath['home'], 'synTrajectory')
 dpath['individualTrajectory'] = opath.join(dpath['home'], 'individualTrajectory')
 dpath['presenceBinary'] = opath.join(dpath['home'], 'presenceBinary')
 dpath['driverRelation'] = opath.join(dpath['home'], 'driverRelation')
+dpath['relationSummary'] = opath.join(dpath['home'], 'relationSummary')
+
+
+
 #
 dpath['interactionCount'] = opath.join(dpath['home'], 'interactionCount')
 dpath['graphPartitionC'] = opath.join(dpath['home'], 'graphPartitionC')
