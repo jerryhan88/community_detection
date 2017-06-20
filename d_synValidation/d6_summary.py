@@ -34,7 +34,7 @@ def process_instances(ofpath, ps, cs, ns, da):
     for fn in os.listdir(dpath['driverRelation']):
         if not fnmatch(fn, regExp):
             continue
-        _, seedNum, _, _, _, _, _ = fn[:-len('.csv')].split('')
+        _, seedNum, _, _, _, _, _ = fn[:-len('.csv')].split('-')
         if not seedNum_files.has_key(seedNum):
             seedNum_files[seedNum] = []
         seedNum_files[seedNum] += [opath.join(dpath['driverRelation'], fn)]
