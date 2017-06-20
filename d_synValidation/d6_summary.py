@@ -48,12 +48,16 @@ def process_instances(ofpath, ps, cs, ns, da):
                 hid = {h: i for i, h in enumerate(header)}
                 for row in reader:
                     did1 = int(row[hid['did']])
-                    sigNegRelation = map(int, row[hid['sigNegRelation']].split('|'))
-                    sigPosRelation = map(int, row[hid['sigPosRelation']].split('|'))
-                    for did0 in sigNegRelation:
-                        negRelation.add((did0, did1))
-                    for did0 in sigPosRelation:
-                        posRelation.add((did0, did1))
+                    _sigNegRelation = row[hid['sigNegRelation']]
+                    if _sigNegRelation:
+                        sigNegRelation = map(int, _sigNegRelation.split('|'))
+                        for did0 in sigNegRelation:
+                            negRelation.add((did0, did1))
+                    _sigPosRelation = row[hid['sigPosRelation']]
+                    if _sigPosRelation:
+                        sigPosRelation = map(int, _sigPosRelation.split('|'))
+                        for did0 in sigPosRelation:
+                            posRelation.add((did0, did1))
         missingRel = relationPairs - negRelation
         wrongRel = negRelation - relationPairs
         with open(ofpath, 'a') as w_csvfile:
