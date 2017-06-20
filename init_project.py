@@ -77,7 +77,7 @@ for dn in ['home', 'singleShift',
            'individualRelation', 'graphPartition',
            'communityTrip', 'communityTripWP',
            'communityProdDuration', 'communityStats','hotspotDetection',
-           'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
+           'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation', 'relationSummary',
            'interactionCount', 'graphPartitionC', 'baselineTrip', 'baselineTripWP',
 
            'graphComparision', 'graphStats'
