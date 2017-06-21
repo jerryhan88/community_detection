@@ -59,6 +59,7 @@ dpath['individualTrajectory'] = opath.join(dpath['home'], 'individualTrajectory'
 dpath['presenceBinary'] = opath.join(dpath['home'], 'presenceBinary')
 dpath['driverRelation'] = opath.join(dpath['home'], 'driverRelation')
 dpath['relationSummary'] = opath.join(dpath['home'], 'relationSummary')
+dpath['relationChart'] = opath.join(dpath['home'], 'relationChart')
 
 
 
@@ -77,7 +78,8 @@ for dn in ['home', 'singleShift',
            'individualRelation', 'graphPartition',
            'communityTrip', 'communityTripWP',
            'communityProdDuration', 'communityStats','hotspotDetection',
-           'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation', 'relationSummary',
+           'synTrajectory', 'individualTrajectory', 'presenceBinary', 'driverRelation',
+           'relationSummary', 'relationChart',
            'interactionCount', 'graphPartitionC', 'baselineTrip', 'baselineTripWP',
 
            'graphComparision', 'graphStats'

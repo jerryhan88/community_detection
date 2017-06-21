@@ -6,7 +6,6 @@ from d2_synTrajectory import gen_synTrajectories
 from d3_individualTrajectory import split_trips
 from d4_presenceBinary import convert_binRep
 from d5_driverRelation import do_regression
-from d6_summary import summary
 
 
 def run(processorID, numWorkers=11):
