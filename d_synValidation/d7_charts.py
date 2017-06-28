@@ -58,7 +58,7 @@ def scatter_charts():
             ofpath = opath.join(dpath['relationChart'], fn)
             #
             _figsize = (8, 6)
-            _fontsize = 14
+            _fontsize = 28
             _xlabel = '# of $MR$'
             _ylabel = '# of $WR$'
             #
@@ -70,13 +70,13 @@ def scatter_charts():
             for ns in ['S', 'M']:
                 for da in 'L M H'.split():
                     p = plt.scatter(results[ps, cs, ns, da]['numMissingRel'], results[ps, cs, ns, da]['numWrongRel'],
-                                    marker=mlists[i])
+                                    marker=mlists[i], s=150)
                     plots += [p]
                     labels += ['$Z(%s)$-$D(%s)$' % (ns, da)]
                     i += 1
-            plt.legend(plots, labels, loc='upper right', ncol=2, fontsize=_fontsize, scatterpoints=1)
-            ax.set_xlabel(_xlabel, fontsize=_fontsize + 2)
-            ax.set_ylabel(_ylabel, fontsize=_fontsize + 2)
+            plt.legend(plots, labels, loc='upper right', ncol=2, fontsize=_fontsize-8, scatterpoints=1)
+            ax.set_xlabel(_xlabel, fontsize=_fontsize)
+            ax.set_ylabel(_ylabel, fontsize=_fontsize)
             ax.tick_params(axis='both', which='major', labelsize=_fontsize)
             plt.savefig(ofpath, bbox_inches='tight', pad_inches=0)
 
@@ -138,8 +138,6 @@ def multiLines_charts():
             _label = '# of $MR$'
             labels += [_label]
             plt.plot(X, Y, linewidth=1, marker=mlists[0])
-
-
 
             m = 'numWrongRel'
             X, Y = [], []

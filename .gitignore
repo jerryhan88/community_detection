@@ -2,9 +2,9 @@
 .gitignore
 .idea/
 *.pyc
-build/
-
 *.log
 *.html
-*.png
+
+build/
+
 
